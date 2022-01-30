@@ -7,6 +7,9 @@
                     <router-link to="/create" class="nav-item nav-link">Create Product</router-link>
                 </div>
             </div>
+
+            <router-link to="/todos" class="nav-item nav-link">Index ToDo</router-link>
+
         </nav>
 
         <router-view> </router-view>
