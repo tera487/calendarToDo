@@ -5499,6 +5499,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex_persistedstate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex-persistedstate */ "./node_modules/vuex-persistedstate/dist/vuex-persistedstate.es.js");
 /* harmony import */ var _auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./auth */ "./resources/js/store/auth.js");
 /* harmony import */ var _modules_alert__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/alert */ "./resources/js/store/modules/alert.js");
+/* harmony import */ var _modules_alert__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_modules_alert__WEBPACK_IMPORTED_MODULE_2__);
 
 
  // import auth from "./modules/auth"; 
@@ -5510,7 +5511,7 @@ vue__WEBPACK_IMPORTED_MODULE_3__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_4_
   plugins: [(0,vuex_persistedstate__WEBPACK_IMPORTED_MODULE_0__["default"])()],
   modules: {
     auth: _auth__WEBPACK_IMPORTED_MODULE_1__["default"],
-    alert: _modules_alert__WEBPACK_IMPORTED_MODULE_2__["default"]
+    alert: (_modules_alert__WEBPACK_IMPORTED_MODULE_2___default())
   }
 }));
 
@@ -5520,32 +5521,23 @@ vue__WEBPACK_IMPORTED_MODULE_3__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_4_
 /*!*********************************************!*\
   !*** ./resources/js/store/modules/alert.js ***!
   \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-var state = {
-  message: '',
-  // 表示する文字列
-  type: 'success' // クラス名に使用
-
-};
-var mutations = {
-  setAlert: function setAlert(state, _ref) {
-    var message = _ref.message,
-        type = _ref.type;
-    state.message = message;
-    state.type = type || 'success';
-  }
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  namespaced: true,
-  state: state,
-  mutations: mutations
-});
+// const state = {
+//   message: '',    // 表示する文字列
+//   type: 'success' // クラス名に使用
+// };
+// const mutations = {
+//   setAlert (state, {message, type}) {
+//       state.message = message;
+//       state.type = type || 'success';
+//   }
+// };
+// export default {
+//   namespaced: true,
+//   state,
+//   mutations
+// };
 
 /***/ }),
 
