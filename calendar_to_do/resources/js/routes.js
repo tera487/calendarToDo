@@ -8,6 +8,14 @@ import CreateToDo from './components/todos/CreateToDo.vue';
 import EditToDo from './components/todos/EditToDo.vue';
  
 
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from './store/index';
+
+Vue.use(VueRouter);
+
+
+
 export const routes = [
     {
         name: 'home',
