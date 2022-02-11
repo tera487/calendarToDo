@@ -5441,6 +5441,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5476,16 +5477,33 @@ __webpack_require__.r(__webpack_exports__);
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        axios.post('/api/todos', this.todo).then(function (response) {
-          return _this.$router.push({
-            name: 'indexToDo'
+        if (this.$route.params.id) {
+          axios.patch("/api/todos/".concat(this.$route.params.id), this.todo).then(function (res) {
+            _this.$router.push({
+              name: 'indexToDo'
+            });
           });
-        })["catch"](function (err) {
-          return console.log(err);
-        })["finally"](function () {
-          return _this.loading = false;
-        });
+        } else {
+          axios.post('/api/todos', this.todo).then(function (response) {
+            return _this.$router.push({
+              name: 'indexToDo'
+            });
+          })["catch"](function (err) {
+            return console.log(err);
+          })["finally"](function () {
+            return _this.loading = false;
+          });
+        }
       }
+    }
+  },
+  created: function created() {
+    var _this2 = this;
+
+    if (this.$route.params.id) {
+      axios.get("/api/todos/".concat(this.$route.params.id)).then(function (res) {
+        _this2.todo = res.data;
+      });
     }
   }
 });
@@ -5545,7 +5563,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    this.axios.get('/api/todos/').then(function (response) {
+    axios.get('/api/todos/').then(function (response) {
       _this.todos = response.data;
     });
   },
@@ -5553,7 +5571,7 @@ __webpack_require__.r(__webpack_exports__);
     deleteProduct: function deleteProduct(id) {
       var _this2 = this;
 
-      this.axios["delete"]("api/todos/".concat(id)).then(function (response) {
+      axios["delete"]("api/todos/".concat(id)).then(function (response) {
         var i = _this2.todos.map(function (data) {
           return data.id;
         }).indexOf(id);
@@ -5720,6 +5738,10 @@ var Routes = [{
   }, {
     name: 'createToDo',
     path: '/todos/create',
+    component: _components_todos_CreateToDo_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  }, {
+    name: 'editToDo',
+    path: '/todos/:id',
     component: _components_todos_CreateToDo_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   }]
 }];
@@ -28898,7 +28920,9 @@ var render = function () {
           1
         ),
         _vm._v(" "),
-        _c("button", { attrs: { type: "submit" } }, [_vm._v("新規作成")]),
+        this.$route.params.id
+          ? _c("button", { attrs: { type: "submit" } }, [_vm._v("更新")])
+          : _c("button", { attrs: { type: "submit" } }, [_vm._v("新規作成")]),
       ]
     ),
   ])

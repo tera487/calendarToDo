@@ -39,7 +39,7 @@
       }
     },
     created() {
-      this.axios
+      axios
       .get('/api/todos/')
       .then(response => {
           this.todos = response.data;
@@ -47,7 +47,7 @@
     },
     methods:{
       deleteProduct(id) { 
-          this.axios
+          axios
               .delete(`api/todos/${id}`)
               .then(response => {
                   let i = this.todos.map(data => data.id).indexOf(id);

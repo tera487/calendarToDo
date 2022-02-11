@@ -73,6 +73,11 @@ const Routes = [
             path: '/todos/create',
             component: CreateToDo,
         },
+        {
+            name: 'editToDo',
+            path: '/todos/:id',
+            component: CreateToDo,
+        },
     ]
   },
 ]

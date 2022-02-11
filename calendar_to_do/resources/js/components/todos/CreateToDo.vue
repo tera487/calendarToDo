@@ -22,7 +22,8 @@
         <ErrorRequired :validation = '$v.todo.end_date.$error' attribute="開始日"></ErrorRequired>
       </div>
 
-      <button type="submit">新規作成</button>
+      <button type="submit" v-if="this.$route.params.id">更新</button>
+      <button type="submit" v-else>新規作成</button>
     </form>
 
   </div>
@@ -61,15 +62,31 @@ export default{
     addToDo(){
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        axios
-        .post('/api/todos', this.todo)
-        .then(response => (
+        if(this.$route.params.id){
+          axios
+          .patch(`/api/todos/${this.$route.params.id}`, this.todo)
+              .then((res) => {
+                  this.$router.push({ name: 'indexToDo' });
+              });
+        }else{
+          axios.post('/api/todos', this.todo)
+          .then(response => (
             this.$router.push({ name: 'indexToDo' })
-        ))
-        .catch(err => console.log(err))
-        .finally(() => this.loading = false)
-        
+          ))
+          .catch(err => console.log(err))
+          .finally(() => this.loading = false)
+        }  
       }
+    }
+  },
+
+  created() {
+    if(this.$route.params.id){
+      axios
+          .get(`/api/todos/${this.$route.params.id}`)
+          .then((res) => {
+              this.todo = res.data;
+          });
     }
   },
 
