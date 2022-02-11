@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate'
-// import auth from "./modules/auth"; 
 import auth from "./auth"; 
-import alert from "./modules/alert";
- 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
 Vue.use(Vuex);
  
 export default new Vuex.Store({
@@ -12,6 +12,6 @@ export default new Vuex.Store({
         createPersistedState()
     ],
     modules: {
-        auth, alert
+        auth
     }
 });

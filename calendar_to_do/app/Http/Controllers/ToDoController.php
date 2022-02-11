@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ToDo;
+use App\Http\Requests\ToDoRequest;
+
 use Illuminate\Http\Request;
 
 class ToDoController extends Controller
@@ -12,7 +14,7 @@ class ToDoController extends Controller
         return array_reverse($todos);
     }
 
-    public function store(Request $request){
+    public function store(ToDoRequest $request){
         $attributes = $request->only(['title', 'content', 'start_date','end_date']);
         ToDo::create($attributes);
         return response()->json('ToDo created!');
@@ -25,7 +27,7 @@ class ToDoController extends Controller
     }
 
 
-    public function update($id, Request $request){
+    public function update($id, ToDoRequest $request){
         $todo = ToDo::find($id);
         $todo->update($request->all());
         return response()->json('ToDo updated!');

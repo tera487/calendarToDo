@@ -17,6 +17,18 @@ const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* web
 const Dashboard = () => import('../components/auth/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 /* Authenticated Component */
 
+import IndexToDo from '../components/todos/IndexToDo.vue';
+import CreateToDo from '../components/todos/CreateToDo.vue';
+
+// グローバル登録
+
+// フォーム
+Vue.component('BaseInput', require('../components/form/BaseInput.vue').default);
+Vue.component('BaseTextarea', require('../components/form/BaseTextarea.vue').default);
+
+// エラー
+Vue.component('ErrorRequired', require('../components/error/ErrorRequired.vue').default);
+
 const Routes = [
   {
       name:"login",
@@ -50,9 +62,19 @@ const Routes = [
             meta:{
                 title:`Dashboard`
             }
-        }
+        },
+        {
+            name: 'indexToDo',
+            path: '/todos',
+            component: IndexToDo,
+        },
+        {
+            name: 'createToDo',
+            path: '/todos/create',
+            component: CreateToDo,
+        },
     ]
-  }
+  },
 ]
 
 var router  = new VueRouter({
