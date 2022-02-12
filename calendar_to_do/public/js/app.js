@@ -5331,6 +5331,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5359,9 +5360,14 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getEvents: function getEvents(_ref) {
-      var start = _ref.start,
-          end = _ref.end;
+    viewDay: function viewDay(_ref) {
+      var date = _ref.date;
+      this.focus = date;
+      this.type = 'day';
+    },
+    getEvents: function getEvents(_ref2) {
+      var start = _ref2.start,
+          end = _ref2.end;
       var events = [];
       var min = new Date("".concat(start.date, "T00:00:00"));
       var max = new Date("".concat(end.date, "T23:59:59"));
@@ -29467,7 +29473,7 @@ var render = function () {
                 "event-color": _vm.getEventColor,
                 locale: "ja-jp",
               },
-              on: { change: _vm.getEvents },
+              on: { change: _vm.getEvents, "click:date": _vm.viewDay },
               model: {
                 value: _vm.value,
                 callback: function ($$v) {

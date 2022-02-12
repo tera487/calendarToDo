@@ -60,6 +60,7 @@
           :event-overlap-threshold="30"
           :event-color="getEventColor"
           @change="getEvents"
+          @click:date="viewDay"
           locale="ja-jp"
         ></v-calendar>
       </v-sheet>
@@ -87,6 +88,10 @@
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
     }),
     methods: {
+      viewDay ({ date }) {
+        this.focus = date
+        this.type = 'day'
+      },
       getEvents ({ start, end }) {
         const events = []
 
