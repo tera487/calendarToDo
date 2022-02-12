@@ -17,8 +17,12 @@ const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* web
 const Dashboard = () => import('../components/auth/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 /* Authenticated Component */
 
+// todo
 import IndexToDo from '../components/todos/IndexToDo.vue';
 import CreateToDo from '../components/todos/CreateToDo.vue';
+
+// calendar
+import IndexCalendar from '../components/calendar/IndexCalendar.vue';
 
 // グローバル登録
 
@@ -31,22 +35,22 @@ Vue.component('ErrorRequired', require('../components/error/ErrorRequired.vue').
 
 const Routes = [
   {
-      name:"login",
-      path:"/login",
-      component:Login,
-      meta:{
-          middleware:"guest",
-          title:`Login`
-      }
+    name:"login",
+    path:"/login",
+    component:Login,
+    meta:{
+        middleware:"guest",
+        title:`Login`
+    }
   },
   {
-      name:"register",
-      path:"/register",
-      component:Register,
-      meta:{
-          middleware:"guest",
-          title:`Register`
-      }
+    name:"register",
+    path:"/register",
+    component:Register,
+    meta:{
+        middleware:"guest",
+        title:`Register`
+    }
   },
   {
     path:"/",
@@ -63,6 +67,7 @@ const Routes = [
                 title:`Dashboard`
             }
         },
+        // todo
         {
             name: 'indexToDo',
             path: '/todos',
@@ -78,6 +83,13 @@ const Routes = [
             path: '/todos/:id',
             component: CreateToDo,
         },
+        //calendar
+        {
+            name: 'IndexCalendar',
+            path: '/calendar',
+            component: IndexCalendar,
+        },
+
     ]
   },
 ]
