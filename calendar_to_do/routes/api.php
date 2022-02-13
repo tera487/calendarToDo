@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ToDoController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\GeneralSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ Route::middleware('api')->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('todos', ToDoController::class);
     Route::resource('calendar', CalendarController::class);
+    Route::resource('generalSetting', GeneralSettingController::class);
 });
 
 
