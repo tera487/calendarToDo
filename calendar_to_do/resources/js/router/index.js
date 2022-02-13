@@ -24,6 +24,13 @@ import CreateToDo from '../components/todos/CreateToDo.vue';
 // calendar
 import IndexCalendar from '../components/calendar/IndexCalendar.vue';
 
+
+// generalSetting
+import IndexGeneralSetting from '../components/generalSetting/IndexGeneralSetting.vue';
+
+// account
+import IndexUser from '../components/user/IndexUser.vue';
+
 // グローバル登録
 
 // フォーム
@@ -59,35 +66,49 @@ const Routes = [
         middleware:"auth"
     },
     children:[
+
         {
             name:"dashboard",
             path: '/',
-            component: Dashboard,
-            meta:{
-                title:`Dashboard`
-            }
+            component: IndexCalendar,
+        },
+        //accout
+        {
+            name: 'IndexUser',
+            path: '/user',
+            component: IndexUser,
         },
         // todo
         {
             name: 'indexToDo',
             path: '/todos',
             component: IndexToDo,
-        },
-        {
-            name: 'createToDo',
-            path: '/todos/create',
-            component: CreateToDo,
-        },
-        {
-            name: 'editToDo',
-            path: '/todos/:id',
-            component: CreateToDo,
+            children:[
+                {
+                    name: 'createToDo',
+                    path: '/create',
+                    component: CreateToDo,
+                },
+                {
+                    name: 'editToDo',
+                    path: '/:id',
+                    component: CreateToDo,
+                },
+
+            ],
         },
         //calendar
         {
-            name: 'IndexCalendar',
+            name: 'indexCalendar',
             path: '/calendar',
             component: IndexCalendar,
+        },
+
+        //generalSetting
+        {
+            name: 'indexGeneralSetting',
+            path: '/generalSetting',
+            component: IndexGeneralSetting,
         },
 
     ]
