@@ -17,7 +17,7 @@ class CreateToDosTable extends Migration
             $table->id();
             $table->string('title',255)->index();
             $table->string('content',255);
-            $table->date('start_date',255)->index();
+            $table->date('start_date',255)->nullable()->index();
             $table->date('end_date',255)->nullable()->index();
             $table->timestamps();
         });

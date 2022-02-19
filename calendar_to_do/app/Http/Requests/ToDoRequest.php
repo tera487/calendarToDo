@@ -14,7 +14,7 @@ class ToDoRequest extends ApiRequest
         return [
             'title' => 'required',
             'content' => 'required',
-            'start_date' => 'required',
+            'start_date' => 'nullable',
             'end_date' => 'nullable'
         ];
     }
