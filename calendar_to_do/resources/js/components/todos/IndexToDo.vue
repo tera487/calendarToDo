@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <p>test</p>
-    <router-link to="/todos/create" class="nav-item nav-link">新規作成</router-link>
+  <v-app>
+      <router-link :to="{name: 'createToDo'}" class="nav-item nav-link">
+        <v-btn
+          elevation="2"
+          color="green accent-3"
+        >
+          新規作成
+        </v-btn>
+      </router-link>
 
     <table class="table">
       <thead>
@@ -28,7 +34,7 @@
       </tbody>
     </table>
 
-  </div>
+  </v-app>
 </template>
 
 <script >
@@ -40,7 +46,7 @@
     },
     created() {
       axios
-      .get('/api/todos/')
+      .get('/api/todo/')
       .then(response => {
           this.todos = response.data;
       });
@@ -48,11 +54,12 @@
     methods:{
       deleteProduct(id) { 
           axios
-              .delete(`api/todos/${id}`)
+              .delete(`api/todo/${id}`)
               .then(response => {
                   let i = this.todos.map(data => data.id).indexOf(id);
                   this.todos.splice(i, 1)
-              });
+              })
+              .catch(err => console.log(err));
       }
     }
   }

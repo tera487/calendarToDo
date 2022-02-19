@@ -74,28 +74,20 @@ const Routes = [
         },
         //accout
         {
-            name: 'IndexUser',
+            name: 'indexUser',
             path: '/user',
             component: IndexUser,
         },
         // todo
         {
             name: 'indexToDo',
-            path: '/todos',
+            path: '/todo',
             component: IndexToDo,
-            children:[
-                {
-                    name: 'createToDo',
-                    path: '/create',
-                    component: CreateToDo,
-                },
-                {
-                    name: 'editToDo',
-                    path: '/:id',
-                    component: CreateToDo,
-                },
-
-            ],
+        },
+        {
+            name: 'createToDo',
+            path: '/todo/create',
+            component: CreateToDo,
         },
         //calendar
         {

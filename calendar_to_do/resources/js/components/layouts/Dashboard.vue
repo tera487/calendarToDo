@@ -1,33 +1,50 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a href="https://techvblogs.com/?ref=project" target="_blank" class="navbar-brand">TechvBlogs</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <router-link :to="{name:'dashboard'}" class="nav-link">Home <span class="sr-only">(current)</span></router-link>
-                    </li>
-                </ul>
-                <div class="ml-auto">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ user.name }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <main class="mt-3">
-            <router-view></router-view>
-        </main>
+        <v-app id="inspire">
+            <v-navigation-drawer
+            v-model="drawer"
+            app
+            >
+            <v-sheet
+                color="grey lighten-4"
+                class="pa-4"
+            >
+                <v-avatar
+                class="mb-4"
+                color="grey darken-1"
+                size="64"
+                ></v-avatar>
+
+                <div>{{user.email}} </div>
+            </v-sheet>
+
+            <v-divider></v-divider>
+
+            <v-list>
+                <router-link :to="{name: path}" v-for="[path, icon, text] in links"
+                    :key="icon">
+                    <v-list-item
+                    
+                    link
+                    >
+                        <v-list-item-icon>
+                            <v-icon>{{ icon }}</v-icon>
+                        </v-list-item-icon>
+
+                        <v-list-item-content>
+                            <v-list-item-title>{{ text }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </router-link>
+            </v-list>
+            </v-navigation-drawer>
+
+            <v-main>
+                <main class="mt-3" style="max-width: 90%;     margin: 0 auto;">
+                    <router-view></router-view>
+                </main>
+            </v-main>
+        </v-app>
     </div>
 </template>
 
@@ -35,10 +52,19 @@
 import {mapActions} from 'vuex'
 export default {
     name:"dashboard-layout",
-    data(){
-        return {
-            user:this.$store.state.auth.user
-        }
+
+    data () {
+      return {
+        cards: ['Today', 'Yesterday'],
+        drawer: null,
+        links: [
+            ['indexCalendar','list', 'Inbox'],
+            ['indexToDo','task', 'Todo'],
+            ['indexUser','account_circle', 'account'],
+            ['indexGeneralSetting','settings', 'setting'],
+        ],
+        user:this.$store.state.auth.user
+      }
     },
     methods:{
         ...mapActions({
@@ -53,3 +79,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+a{
+    text-decoration: none;
+}
+</style>
