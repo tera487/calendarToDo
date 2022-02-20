@@ -17,8 +17,8 @@ class CreateCalendarsTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->index();
             $table->string('name');
-            $table->date('start_time');
-            $table->date('end_time');
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->timestamps();
         });
     }

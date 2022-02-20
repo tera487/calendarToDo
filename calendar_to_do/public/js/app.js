@@ -5353,11 +5353,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      type: 'month',
+      type: 'week',
       types: ['month', 'week', 'day', '4day'],
       mode: 'column',
       modes: ['stack', 'column'],
@@ -5449,11 +5448,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     //	マウスボタンが離されたとき
     endDrag: function endDrag() {
-      // this.createEvent.start = this.dateFormat(this.createEvent.start);
-      // this.createEvent.end = this.dateFormat(this.createEvent.end);
-      // axios.post('/api/calendar', this.createEvent)
-      //   .catch(err => console.log(err))
-      //   .finally(() => this.loading = false)
+      var _this = this;
+
+      this.createEvent.start = this.dateFormat(this.createEvent.start);
+      this.createEvent.end = this.dateFormat(this.createEvent.end);
+      axios.post('/api/calendar', this.createEvent)["catch"](function (err) {
+        return console.log(err);
+      })["finally"](function () {
+        return _this.loading = false;
+      });
       this.dragTime = null;
       this.dragEvent = null;
       this.createEvent = null;
@@ -5501,33 +5504,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     rndElement: function rndElement(arr) {
       return arr[this.rnd(0, arr.length - 1)];
-    },
-    // イベントをランダムに作成する
-    getEvents: function getEvents(_ref3) {
-      var start = _ref3.start,
-          end = _ref3.end;
-      var events = [];
-      var min = new Date("".concat(start.date, "T00:00:00"));
-      var max = new Date("".concat(end.date, "T23:59:59"));
-      var days = (max.getTime() - min.getTime()) / 86400000;
-      var eventCount = this.rnd(days, days + 20);
-
-      for (var i = 0; i < eventCount; i++) {
-        var allDay = this.rnd(0, 3) === 0;
-        var firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        var first = new Date(firstTimestamp - firstTimestamp % 900000);
-        var secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        var second = new Date(first.getTime() + secondTimestamp);
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay
-        });
-      }
-
-      this.events = events;
     }
   }, _defineProperty(_methods, "getEventColor", function getEventColor(event) {
     return event.color;
@@ -5535,18 +5511,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return Math.floor((b - a + 1) * Math.random()) + a;
   }), _methods),
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
-    axios.get('/api/calendar/').then(function (response) {
+    axios.get('/api/calendar').then(function (response) {
       var data = response.data;
 
-      for (var i = 0; i < data.length; i++) {
+      for (var i = 0; i < response.data.length; i++) {
         response.data[i].start = new Date(response.data[i].start);
         response.data[i].end = new Date(response.data[i].end);
+        response.data[i].timed = true;
+        response.data[i].color = _this2.rndElement(_this2.colors);
       } // response.data.start= new Date(response.data.start);
 
 
-      _this.events = response.data;
+      _this2.events = response.data;
     });
   }
 });
@@ -30687,7 +30665,6 @@ var render = function () {
                 "event-ripple": false,
               },
               on: {
-                change: _vm.getEvents,
                 "click:date": _vm.viewDay,
                 "mousedown:event": _vm.startDrag,
                 "mousedown:time": _vm.startTime,

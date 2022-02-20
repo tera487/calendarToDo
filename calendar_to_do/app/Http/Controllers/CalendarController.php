@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CalendarController extends Controller
 {
     public function index(){
-        $calendar_items = Calendar::all()->toArray();
+        $calendar_items = Calendar::get(['name','start','end'])->toArray();
         return array_reverse($calendar_items);
     }
 
-    public function store(ToDoRequest $request){
-        $attributes = $request->only(['title', 'content', 'start_date','end_date']);
-        ToDo::create($attributes);
+    public function store(Request $request){
+        $calendar=new Calendar;
+        $calendar->fill($request->only(['name', 'start','end']));
+        $calendar->user_id = Auth::id();
+        $calendar->save();
         return response()->json('ToDo created!');
     }
 
