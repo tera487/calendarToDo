@@ -98,6 +98,7 @@
       createEvent: null,
       createStart: null,
       extendOriginal: null,
+      numberId:0,
     }),
     methods: {
       // 日付をclickした際にその日付に遷移
@@ -129,6 +130,7 @@
             start: this.createStart,
             end: this.createStart,
             timed: true,
+            id: this.addEventId()
           }
 
           this.events.push(this.createEvent)
@@ -166,16 +168,35 @@
 
       //	マウスボタンが離されたとき
       endDrag () {
+        if(this.createEvent !== null){
+          this.createEvent.start = this.dateFormat(this.createEvent.start);
+          this.createEvent.end = this.dateFormat(this.createEvent.end);
+          axios.post('/api/calendar', this.createEvent)
+            .then((res) => {
+              this.createEvent.start = new Date(this.createEvent.start)
+              this.createEvent.end = new Date(this.createEvent.end)
+              this.createEvent.id =  res.data;
+              this.createEvent = null
+            })
+            .catch(err => console.log(err))
+            .finally(() => this.loading = false)
+        }
         
-        this.createEvent.start = this.dateFormat(this.createEvent.start);
-        this.createEvent.end = this.dateFormat(this.createEvent.end);
-        axios.post('/api/calendar', this.createEvent)
-          .catch(err => console.log(err))
-          .finally(() => this.loading = false)
+        if(this.dragEvent !== null){
+          this.dragEvent.start = this.dateFormat(this.dragEvent.start);
+          this.dragEvent.end = this.dateFormat(this.dragEvent.end);
+          axios.patch(`/api/calendar/${this.dragEvent.id}`, this.dragEvent)
+            .then(() => {
+              this.dragEvent.start = new Date(this.dragEvent.start)
+              this.dragEvent.end = new Date(this.dragEvent.end)
+              this.dragEvent = null
+            })
+            .catch(err => console.log(err))
+            .finally(() => this.loading = false)
+        }
+
 
         this.dragTime = null
-        this.dragEvent = null
-        this.createEvent = null
         this.createStart = null
         this.extendOriginal = null
       },
@@ -231,36 +252,6 @@
       },
 
 
-
-      // イベントをランダムに作成する
-      // getEvents ({ start, end }) {
-      //   const events = []
-
-      //   const min = new Date(`${start.date}T00:00:00`)
-      //   const max = new Date(`${end.date}T23:59:59`)
-      //   const days = (max.getTime() - min.getTime()) / 86400000
-      //   const eventCount = this.rnd(days, days + 20)
-
-      //   for (let i = 0; i < eventCount; i++) {
-      //     const allDay = this.rnd(0, 3) === 0
-      //     const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-      //     const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-      //     const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-      //     const second = new Date(first.getTime() + secondTimestamp)
-
-      //     events.push({
-      //       name: this.names[this.rnd(0, this.names.length - 1)],
-      //       start: first,
-      //       end: second,
-      //       color: this.colors[this.rnd(0, this.colors.length - 1)],
-      //       timed: !allDay,
-      //     })
-      //   }
-
-      //   this.events = events
-      // },
-
-
       // イベントの色について
       getEventColor (event) {
         return event.color
@@ -268,6 +259,9 @@
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
+      addEventId(){
+        return this.numberId +=1
+      }
     },
 
     mounted(){
@@ -280,9 +274,8 @@
             response.data[i].end = new Date(response.data[i].end)
             response.data[i].timed = true
             response.data[i].color = this.rndElement(this.colors)
-
+            response.data[i].id = response.data[i].id
           }
-          // response.data.start= new Date(response.data.start);
           this.events= response.data;
       });
     }

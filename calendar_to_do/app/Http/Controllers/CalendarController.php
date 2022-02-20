@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CalendarController extends Controller
 {
     public function index(){
-        $calendar_items = Calendar::get(['name','start','end'])->toArray();
+        $calendar_items = Calendar::get(['name','start','end','id'])->toArray();
         return array_reverse($calendar_items);
     }
 
@@ -18,7 +18,7 @@ class CalendarController extends Controller
         $calendar->fill($request->only(['name', 'start','end']));
         $calendar->user_id = Auth::id();
         $calendar->save();
-        return response()->json('ToDo created!');
+        return response()->json($calendar->id);
     }
 
     public function show($id)
@@ -28,10 +28,11 @@ class CalendarController extends Controller
     }
 
 
-    public function update($id, ToDoRequest $request){
-        $todo = ToDo::find($id);
-        $todo->update($request->all());
-        return response()->json('ToDo updated!');
+    public function update($id, Request $request){
+        $calendar=Calendar::find($id);
+        $calendar->fill($request->only(['name', 'start','end']));
+        $calendar->user_id = Auth::id();
+        return $calendar->save();
     }
 
     public function destroy($id)

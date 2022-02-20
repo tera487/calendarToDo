@@ -5382,7 +5382,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       dragStart: null,
       createEvent: null,
       createStart: null,
-      extendOriginal: null
+      extendOriginal: null,
+      numberId: 0
     };
   },
   methods: (_methods = {
@@ -5415,7 +5416,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           color: this.rndElement(this.colors),
           start: this.createStart,
           end: this.createStart,
-          timed: true
+          timed: true,
+          id: this.addEventId()
         };
         this.events.push(this.createEvent);
       }
@@ -5450,16 +5452,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     endDrag: function endDrag() {
       var _this = this;
 
-      this.createEvent.start = this.dateFormat(this.createEvent.start);
-      this.createEvent.end = this.dateFormat(this.createEvent.end);
-      axios.post('/api/calendar', this.createEvent)["catch"](function (err) {
-        return console.log(err);
-      })["finally"](function () {
-        return _this.loading = false;
-      });
+      if (this.createEvent !== null) {
+        this.createEvent.start = this.dateFormat(this.createEvent.start);
+        this.createEvent.end = this.dateFormat(this.createEvent.end);
+        axios.post('/api/calendar', this.createEvent).then(function (res) {
+          _this.createEvent.start = new Date(_this.createEvent.start);
+          _this.createEvent.end = new Date(_this.createEvent.end);
+          _this.createEvent.id = res.data;
+          _this.createEvent = null;
+        })["catch"](function (err) {
+          return console.log(err);
+        })["finally"](function () {
+          return _this.loading = false;
+        });
+      }
+
+      if (this.dragEvent !== null) {
+        this.dragEvent.start = this.dateFormat(this.dragEvent.start);
+        this.dragEvent.end = this.dateFormat(this.dragEvent.end);
+        axios.patch("/api/calendar/".concat(this.dragEvent.id), this.dragEvent).then(function () {
+          _this.dragEvent.start = new Date(_this.dragEvent.start);
+          _this.dragEvent.end = new Date(_this.dragEvent.end);
+          _this.dragEvent = null;
+        })["catch"](function (err) {
+          return console.log(err);
+        })["finally"](function () {
+          return _this.loading = false;
+        });
+      }
+
       this.dragTime = null;
-      this.dragEvent = null;
-      this.createEvent = null;
       this.createStart = null;
       this.extendOriginal = null;
     },
@@ -5509,6 +5531,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return event.color;
   }), _defineProperty(_methods, "rnd", function rnd(a, b) {
     return Math.floor((b - a + 1) * Math.random()) + a;
+  }), _defineProperty(_methods, "addEventId", function addEventId() {
+    return this.numberId += 1;
   }), _methods),
   mounted: function mounted() {
     var _this2 = this;
@@ -5521,8 +5545,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         response.data[i].end = new Date(response.data[i].end);
         response.data[i].timed = true;
         response.data[i].color = _this2.rndElement(_this2.colors);
-      } // response.data.start= new Date(response.data.start);
-
+        response.data[i].id = response.data[i].id;
+      }
 
       _this2.events = response.data;
     });
