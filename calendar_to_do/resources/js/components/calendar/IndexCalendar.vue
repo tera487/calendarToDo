@@ -85,6 +85,7 @@
                   <v-text-field
                     label="タイトル"
                     v-model="createEvent.name"
+                    :error-messages="nameErrors"
                     @input="$v.createEvent.name.$touch()"
                     @blur="$v.createEvent.name.$touch()"
                   ></v-text-field>
@@ -105,6 +106,9 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :error-messages="startErrors"
+                            @input="$v.createEvent.start.$touch()"
+                            @blur="$v.createEvent.start.$touch()"
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -129,6 +133,9 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :error-messages="endErrors"
+                            @input="$v.createEvent.end.$touch()"
+                            @blur="$v.createEvent.end.$touch()"
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -403,18 +410,24 @@
       });
     },
     computed: {
-    titleErrors () {
+    nameErrors () {
       const errors = []
-      if (!this.$v.name.$dirty) return errors
-      !this.$v.todo.title.required && errors.push('タイトルは必須です。')
+      if (!this.$v.createEvent.name.$dirty) return errors
+      !this.$v.createEvent.name.required && errors.push('タイトルは必須です。')
       return errors
     },
-    // endDateErrors () {
-    //   const errors = []
-    //   if (!this.$v.todo.end_date.$dirty) return errors
-    //   !this.$v.todo.end_date.required && errors.push('期限は必須です。')
-    //   return errors
-    // },
+    startErrors () {
+      const errors = []
+      if (!this.$v.createEvent.start.$dirty) return errors
+      !this.$v.createEvent.start.required && errors.push('タイムゾーンは必須です。')
+      return errors
+    },
+    endErrors () {
+      const errors = []
+      if (!this.$v.createEvent.end.$dirty) return errors
+      !this.$v.createEvent.end.required && errors.push('タイムゾーンは必須です。')
+      return errors
+    },
   },
   }
 </script>

@@ -5443,6 +5443,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   validations: {
@@ -5682,18 +5689,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
   },
   computed: {
-    titleErrors: function titleErrors() {
+    nameErrors: function nameErrors() {
       var errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.todo.title.required && errors.push('タイトルは必須です。');
+      if (!this.$v.createEvent.name.$dirty) return errors;
+      !this.$v.createEvent.name.required && errors.push('タイトルは必須です。');
       return errors;
-    } // endDateErrors () {
-    //   const errors = []
-    //   if (!this.$v.todo.end_date.$dirty) return errors
-    //   !this.$v.todo.end_date.required && errors.push('期限は必須です。')
-    //   return errors
-    // },
-
+    },
+    startErrors: function startErrors() {
+      var errors = [];
+      if (!this.$v.createEvent.start.$dirty) return errors;
+      !this.$v.createEvent.start.required && errors.push('タイムゾーンは必須です。');
+      return errors;
+    },
+    endErrors: function endErrors() {
+      var errors = [];
+      if (!this.$v.createEvent.end.$dirty) return errors;
+      !this.$v.createEvent.end.required && errors.push('タイムゾーンは必須です。');
+      return errors;
+    }
   }
 });
 
@@ -30892,7 +30905,10 @@ var render = function () {
                               "v-container",
                               [
                                 _c("v-text-field", {
-                                  attrs: { label: "タイトル" },
+                                  attrs: {
+                                    label: "タイトル",
+                                    "error-messages": _vm.nameErrors,
+                                  },
                                   on: {
                                     input: function ($event) {
                                       return _vm.$v.createEvent.name.$touch()
@@ -30942,6 +30958,20 @@ var render = function () {
                                                               label:
                                                                 "タイムゾーン",
                                                               readonly: "",
+                                                              "error-messages":
+                                                                _vm.startErrors,
+                                                            },
+                                                            on: {
+                                                              input: function (
+                                                                $event
+                                                              ) {
+                                                                return _vm.$v.createEvent.start.$touch()
+                                                              },
+                                                              blur: function (
+                                                                $event
+                                                              ) {
+                                                                return _vm.$v.createEvent.start.$touch()
+                                                              },
                                                             },
                                                             model: {
                                                               value:
@@ -31033,6 +31063,20 @@ var render = function () {
                                                           {
                                                             attrs: {
                                                               readonly: "",
+                                                              "error-messages":
+                                                                _vm.endErrors,
+                                                            },
+                                                            on: {
+                                                              input: function (
+                                                                $event
+                                                              ) {
+                                                                return _vm.$v.createEvent.end.$touch()
+                                                              },
+                                                              blur: function (
+                                                                $event
+                                                              ) {
+                                                                return _vm.$v.createEvent.end.$touch()
+                                                              },
                                                             },
                                                             model: {
                                                               value:
