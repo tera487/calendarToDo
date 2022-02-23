@@ -68,7 +68,53 @@
           @mousemove:time="mouseMove"
           @mouseup:time="endDrag" 
           @mouseleave.native="cancelDrag"
+          @click:event="showEvent"
         ></v-calendar>
+        <v-menu
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement"
+          offset-x
+        >
+          <v-card
+            color="grey lighten-4"
+            min-width="350px"
+            flat
+          >
+            <v-toolbar
+              :color="selectedEvent.color"
+              dark
+            >
+              
+              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-card-text>
+              <span v-html="dateFormat(selectedEvent.start)"></span>
+              〜
+              <span v-html="dateFormat(selectedEvent.end)"></span>
+
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                text
+                color="secondary"
+                @click="selectedOpen = false"
+              >
+                Cancel
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
         <div class="text-center">
           <v-dialog
             v-model="dialog"
@@ -213,8 +259,28 @@
 
       start_date_form:null,
       end_date_form:null,
+
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false,
     }),
     methods: {
+      showEvent ({ nativeEvent, event }) {
+        const open = () => {
+          this.selectedEvent = event
+          this.selectedElement = nativeEvent.target
+          requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
+        }
+
+        if (this.selectedOpen) {
+          this.selectedOpen = false
+          requestAnimationFrame(() => requestAnimationFrame(() => open()))
+        } else {
+          open()
+        }
+
+        nativeEvent.stopPropagation()
+      },
       // 日付をclickした際にその日付に遷移
       viewDay ({ date }) {
         this.focus = date
@@ -308,7 +374,7 @@
 
       //	マウスボタンが離されたとき
       endDrag () {
-        if(this.createEvent !== null){
+        if(this.createEvent.name !== null){
           this.dialog = true
           this.createEvent.start = this.dateFormat(this.createEvent.start);
           this.createEvent.end = this.dateFormat(this.createEvent.end);

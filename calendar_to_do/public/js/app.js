@@ -5450,6 +5450,52 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   validations: {
@@ -5501,19 +5547,51 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       numberId: 0,
       dialog: false,
       start_date_form: null,
-      end_date_form: null
+      end_date_form: null,
+      selectedEvent: {},
+      selectedElement: null,
+      selectedOpen: false
     };
   },
   methods: (_methods = {
+    showEvent: function showEvent(_ref) {
+      var _this = this;
+
+      var nativeEvent = _ref.nativeEvent,
+          event = _ref.event;
+
+      var open = function open() {
+        _this.selectedEvent = event;
+        _this.selectedElement = nativeEvent.target;
+        requestAnimationFrame(function () {
+          return requestAnimationFrame(function () {
+            return _this.selectedOpen = true;
+          });
+        });
+      };
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        requestAnimationFrame(function () {
+          return requestAnimationFrame(function () {
+            return open();
+          });
+        });
+      } else {
+        open();
+      }
+
+      nativeEvent.stopPropagation();
+    },
     // 日付をclickした際にその日付に遷移
-    viewDay: function viewDay(_ref) {
-      var date = _ref.date;
+    viewDay: function viewDay(_ref2) {
+      var date = _ref2.date;
       this.focus = date;
       this.type = 'day';
     },
-    startDrag: function startDrag(_ref2) {
-      var event = _ref2.event,
-          timed = _ref2.timed;
+    startDrag: function startDrag(_ref3) {
+      var event = _ref3.event,
+          timed = _ref3.timed;
 
       if (event && timed) {
         this.dragEvent = event;
@@ -5567,24 +5645,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     validationEventform: function validationEventform() {
-      var _this = this;
+      var _this2 = this;
 
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
         this.dialog = false;
         axios.post('/api/calendar', this.createEvent).then(function (res) {
-          _this.createEvent.start = new Date(_this.createEvent.start);
-          _this.createEvent.end = new Date(_this.createEvent.end);
-          _this.createEvent.id = res.data;
+          _this2.createEvent.start = new Date(_this2.createEvent.start);
+          _this2.createEvent.end = new Date(_this2.createEvent.end);
+          _this2.createEvent.id = res.data;
 
-          _this.events.push(_this.createEvent);
+          _this2.events.push(_this2.createEvent);
 
-          _this.resetCreateEvent();
+          _this2.resetCreateEvent();
         })["catch"](function (err) {
           return console.log(err);
         })["finally"](function () {
-          return _this.loading = false;
+          return _this2.loading = false;
         });
       }
     },
@@ -5597,9 +5675,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     //	マウスボタンが離されたとき
     endDrag: function endDrag() {
-      var _this2 = this;
+      var _this3 = this;
 
-      if (this.createEvent !== null) {
+      if (this.createEvent.name !== null) {
         this.dialog = true;
         this.createEvent.start = this.dateFormat(this.createEvent.start);
         this.createEvent.end = this.dateFormat(this.createEvent.end);
@@ -5609,13 +5687,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.dragEvent.start = this.dateFormat(this.dragEvent.start);
         this.dragEvent.end = this.dateFormat(this.dragEvent.end);
         axios.patch("/api/calendar/".concat(this.dragEvent.id), this.dragEvent).then(function () {
-          _this2.dragEvent.start = new Date(_this2.dragEvent.start);
-          _this2.dragEvent.end = new Date(_this2.dragEvent.end);
-          _this2.dragEvent = null;
+          _this3.dragEvent.start = new Date(_this3.dragEvent.start);
+          _this3.dragEvent.end = new Date(_this3.dragEvent.end);
+          _this3.dragEvent = null;
         })["catch"](function (err) {
           return console.log(err);
         })["finally"](function () {
-          return _this2.loading = false;
+          return _this3.loading = false;
         });
       }
 
@@ -5672,7 +5750,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return Math.floor((b - a + 1) * Math.random()) + a;
   }), _methods),
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     axios.get('/api/calendar').then(function (response) {
       var data = response.data;
@@ -5681,11 +5759,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         response.data[i].start = new Date(response.data[i].start);
         response.data[i].end = new Date(response.data[i].end);
         response.data[i].timed = true;
-        response.data[i].color = _this3.rndElement(_this3.colors);
+        response.data[i].color = _this4.rndElement(_this4.colors);
         response.data[i].id = response.data[i].id;
       }
 
-      _this3.events = response.data;
+      _this4.events = response.data;
     });
   },
   computed: {
@@ -30853,6 +30931,7 @@ var render = function () {
                 "mousedown:time": _vm.startTime,
                 "mousemove:time": _vm.mouseMove,
                 "mouseup:time": _vm.endDrag,
+                "click:event": _vm.showEvent,
               },
               nativeOn: {
                 mouseleave: function ($event) {
@@ -30867,6 +30946,112 @@ var render = function () {
                 expression: "value",
               },
             }),
+            _vm._v(" "),
+            _c(
+              "v-menu",
+              {
+                attrs: {
+                  "close-on-content-click": false,
+                  activator: _vm.selectedElement,
+                  "offset-x": "",
+                },
+                model: {
+                  value: _vm.selectedOpen,
+                  callback: function ($$v) {
+                    _vm.selectedOpen = $$v
+                  },
+                  expression: "selectedOpen",
+                },
+              },
+              [
+                _c(
+                  "v-card",
+                  {
+                    attrs: {
+                      color: "grey lighten-4",
+                      "min-width": "350px",
+                      flat: "",
+                    },
+                  },
+                  [
+                    _c(
+                      "v-toolbar",
+                      { attrs: { color: _vm.selectedEvent.color, dark: "" } },
+                      [
+                        _c("v-toolbar-title", {
+                          domProps: {
+                            innerHTML: _vm._s(_vm.selectedEvent.name),
+                          },
+                        }),
+                        _vm._v(" "),
+                        _c("v-spacer"),
+                        _vm._v(" "),
+                        _c(
+                          "v-btn",
+                          { attrs: { icon: "" } },
+                          [_c("v-icon", [_vm._v("mdi-pencil")])],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-btn",
+                          { attrs: { icon: "" } },
+                          [_c("v-icon", [_vm._v("delete")])],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-btn",
+                          { attrs: { icon: "" } },
+                          [_c("v-icon", [_vm._v("mdi-dots-vertical")])],
+                          1
+                        ),
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("v-card-text", [
+                      _c("span", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.dateFormat(_vm.selectedEvent.start)
+                          ),
+                        },
+                      }),
+                      _vm._v("\n            〜\n            "),
+                      _c("span", {
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.dateFormat(_vm.selectedEvent.end)
+                          ),
+                        },
+                      }),
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "v-card-actions",
+                      [
+                        _c(
+                          "v-btn",
+                          {
+                            attrs: { text: "", color: "secondary" },
+                            on: {
+                              click: function ($event) {
+                                _vm.selectedOpen = false
+                              },
+                            },
+                          },
+                          [_vm._v("\n              Cancel\n            ")]
+                        ),
+                      ],
+                      1
+                    ),
+                  ],
+                  1
+                ),
+              ],
+              1
+            ),
             _vm._v(" "),
             _c(
               "div",
