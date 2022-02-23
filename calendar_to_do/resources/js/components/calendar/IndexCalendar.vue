@@ -69,13 +69,111 @@
           @mouseup:time="endDrag" 
           @mouseleave.native="cancelDrag"
         ></v-calendar>
+        <div class="text-center">
+          <v-dialog
+            v-model="dialog"
+            width="500"
+          >
+
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                スケージュール
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-text-field
+                    label="タイトル"
+                    v-model="createEvent.name"
+                    @input="$v.createEvent.name.$touch()"
+                    @blur="$v.createEvent.name.$touch()"
+                  ></v-text-field>
+                  <v-row>
+                    <v-col>
+                      <v-menu
+                        v-model="start_date_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="createEvent.start"
+                            label="タイムゾーン"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          locale="ja-jp"
+                          v-model="createEvent.start"
+                          @input="start_date_form = false"
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        v-model="end_date_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="createEvent.end"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          locale="ja-jp"
+                          v-model="createEvent.end"
+                          @input="end_date_form = false"
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  text
+                  @click="validationEventform"
+                >
+                  保存
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
       </v-sheet>
     </div>
   </v-app>
 </template>
 
 <script>
+  import { required } from 'vuelidate/lib/validators'
+
   export default {
+    validations: {
+      createEvent: {
+        name:{required},
+        start:{required},
+        end:{required}
+      },
+    },
     data: () => ({
       type: 'week',
       types: ['month', 'week', 'day', '4day'],
@@ -95,10 +193,19 @@
 
       dragEvent: null,
       dragStart: null,
-      createEvent: null,
+      createEvent: {
+        name:null,
+        start:null,
+        end:null
+      },
       createStart: null,
       extendOriginal: null,
+
       numberId:0,
+      dialog: false,
+
+      start_date_form:null,
+      end_date_form:null,
     }),
     methods: {
       // 日付をclickした際にその日付に遷移
@@ -130,7 +237,7 @@
             start: this.createStart,
             end: this.createStart,
             timed: true,
-            id: this.addEventId()
+            id: 0,
           }
 
           this.events.push(this.createEvent)
@@ -166,20 +273,38 @@
         }
       },
 
-      //	マウスボタンが離されたとき
-      endDrag () {
-        if(this.createEvent !== null){
-          this.createEvent.start = this.dateFormat(this.createEvent.start);
-          this.createEvent.end = this.dateFormat(this.createEvent.end);
+      validationEventform(){
+        this.$v.$touch();
+        if (!this.$v.$invalid) {
+          this.dialog = false
           axios.post('/api/calendar', this.createEvent)
             .then((res) => {
               this.createEvent.start = new Date(this.createEvent.start)
               this.createEvent.end = new Date(this.createEvent.end)
               this.createEvent.id =  res.data;
-              this.createEvent = null
+
+              this.events.push(this.createEvent)
+              this.resetCreateEvent()
             })
             .catch(err => console.log(err))
             .finally(() => this.loading = false)
+        }
+      },
+
+      resetCreateEvent(){
+        this.createEvent = {
+          name:null,
+          start:null,
+          end:null
+        }
+      },
+
+      //	マウスボタンが離されたとき
+      endDrag () {
+        if(this.createEvent !== null){
+          this.dialog = true
+          this.createEvent.start = this.dateFormat(this.createEvent.start);
+          this.createEvent.end = this.dateFormat(this.createEvent.end);
         }
         
         if(this.dragEvent !== null){
@@ -219,7 +344,8 @@
           }
         }
 
-        this.createEvent = null
+        // モーダルを追加したため
+        // this.createEvent = null
         this.createStart = null
         this.dragTime = null
         this.dragEvent = null
@@ -259,9 +385,6 @@
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
-      addEventId(){
-        return this.numberId +=1
-      }
     },
 
     mounted(){
@@ -278,6 +401,20 @@
           }
           this.events= response.data;
       });
-    }
+    },
+    computed: {
+    titleErrors () {
+      const errors = []
+      if (!this.$v.name.$dirty) return errors
+      !this.$v.todo.title.required && errors.push('タイトルは必須です。')
+      return errors
+    },
+    // endDateErrors () {
+    //   const errors = []
+    //   if (!this.$v.todo.end_date.$dirty) return errors
+    //   !this.$v.todo.end_date.required && errors.push('期限は必須です。')
+    //   return errors
+    // },
+  },
   }
 </script>

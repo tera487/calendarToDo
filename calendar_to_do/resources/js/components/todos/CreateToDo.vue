@@ -39,6 +39,7 @@
         </template>
         <v-date-picker
           v-model="todo.start_date"
+          locale="ja-jp"
           @input="start_date_form = false"
         ></v-date-picker>
       </v-menu>
@@ -65,6 +66,7 @@
         </template>
         <v-date-picker
           v-model="todo.end_date"
+          locale="ja-jp"
           @input="end_date_form = false"
         ></v-date-picker>
       </v-menu>

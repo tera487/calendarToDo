@@ -5273,6 +5273,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 var _methods;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -5353,7 +5354,110 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  validations: {
+    createEvent: {
+      name: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required
+      },
+      start: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required
+      },
+      end: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_0__.required
+      }
+    }
+  },
   data: function data() {
     return {
       type: 'week',
@@ -5380,10 +5484,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
       dragEvent: null,
       dragStart: null,
-      createEvent: null,
+      createEvent: {
+        name: null,
+        start: null,
+        end: null
+      },
       createStart: null,
       extendOriginal: null,
-      numberId: 0
+      numberId: 0,
+      dialog: false,
+      start_date_form: null,
+      end_date_form: null
     };
   },
   methods: (_methods = {
@@ -5417,7 +5528,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           start: this.createStart,
           end: this.createStart,
           timed: true,
-          id: this.addEventId()
+          id: 0
         };
         this.events.push(this.createEvent);
       }
@@ -5448,36 +5559,56 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.createEvent.end = max;
       }
     },
-    //	マウスボタンが離されたとき
-    endDrag: function endDrag() {
+    validationEventform: function validationEventform() {
       var _this = this;
 
-      if (this.createEvent !== null) {
-        this.createEvent.start = this.dateFormat(this.createEvent.start);
-        this.createEvent.end = this.dateFormat(this.createEvent.end);
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        this.dialog = false;
         axios.post('/api/calendar', this.createEvent).then(function (res) {
           _this.createEvent.start = new Date(_this.createEvent.start);
           _this.createEvent.end = new Date(_this.createEvent.end);
           _this.createEvent.id = res.data;
-          _this.createEvent = null;
+
+          _this.events.push(_this.createEvent);
+
+          _this.resetCreateEvent();
         })["catch"](function (err) {
           return console.log(err);
         })["finally"](function () {
           return _this.loading = false;
         });
       }
+    },
+    resetCreateEvent: function resetCreateEvent() {
+      this.createEvent = {
+        name: null,
+        start: null,
+        end: null
+      };
+    },
+    //	マウスボタンが離されたとき
+    endDrag: function endDrag() {
+      var _this2 = this;
+
+      if (this.createEvent !== null) {
+        this.dialog = true;
+        this.createEvent.start = this.dateFormat(this.createEvent.start);
+        this.createEvent.end = this.dateFormat(this.createEvent.end);
+      }
 
       if (this.dragEvent !== null) {
         this.dragEvent.start = this.dateFormat(this.dragEvent.start);
         this.dragEvent.end = this.dateFormat(this.dragEvent.end);
         axios.patch("/api/calendar/".concat(this.dragEvent.id), this.dragEvent).then(function () {
-          _this.dragEvent.start = new Date(_this.dragEvent.start);
-          _this.dragEvent.end = new Date(_this.dragEvent.end);
-          _this.dragEvent = null;
+          _this2.dragEvent.start = new Date(_this2.dragEvent.start);
+          _this2.dragEvent.end = new Date(_this2.dragEvent.end);
+          _this2.dragEvent = null;
         })["catch"](function (err) {
           return console.log(err);
         })["finally"](function () {
-          return _this.loading = false;
+          return _this2.loading = false;
         });
       }
 
@@ -5500,9 +5631,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.events.splice(i, 1);
           }
         }
-      }
+      } // モーダルを追加したため
+      // this.createEvent = null
 
-      this.createEvent = null;
+
       this.createStart = null;
       this.dragTime = null;
       this.dragEvent = null;
@@ -5531,11 +5663,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return event.color;
   }), _defineProperty(_methods, "rnd", function rnd(a, b) {
     return Math.floor((b - a + 1) * Math.random()) + a;
-  }), _defineProperty(_methods, "addEventId", function addEventId() {
-    return this.numberId += 1;
   }), _methods),
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     axios.get('/api/calendar').then(function (response) {
       var data = response.data;
@@ -5544,12 +5674,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         response.data[i].start = new Date(response.data[i].start);
         response.data[i].end = new Date(response.data[i].end);
         response.data[i].timed = true;
-        response.data[i].color = _this2.rndElement(_this2.colors);
+        response.data[i].color = _this3.rndElement(_this3.colors);
         response.data[i].id = response.data[i].id;
       }
 
-      _this2.events = response.data;
+      _this3.events = response.data;
     });
+  },
+  computed: {
+    titleErrors: function titleErrors() {
+      var errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.todo.title.required && errors.push('タイトルは必須です。');
+      return errors;
+    } // endDateErrors () {
+    //   const errors = []
+    //   if (!this.$v.todo.end_date.$dirty) return errors
+    //   !this.$v.todo.end_date.required && errors.push('期限は必須です。')
+    //   return errors
+    // },
+
   }
 });
 
@@ -5716,6 +5860,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
+//
+//
 //
 //
 //
@@ -30708,6 +30854,285 @@ var render = function () {
                 expression: "value",
               },
             }),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "text-center" },
+              [
+                _c(
+                  "v-dialog",
+                  {
+                    attrs: { width: "500" },
+                    model: {
+                      value: _vm.dialog,
+                      callback: function ($$v) {
+                        _vm.dialog = $$v
+                      },
+                      expression: "dialog",
+                    },
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      [
+                        _c(
+                          "v-card-title",
+                          { staticClass: "text-h5 grey lighten-2" },
+                          [
+                            _vm._v(
+                              "\n              スケージュール\n            "
+                            ),
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-text",
+                          [
+                            _c(
+                              "v-container",
+                              [
+                                _c("v-text-field", {
+                                  attrs: { label: "タイトル" },
+                                  on: {
+                                    input: function ($event) {
+                                      return _vm.$v.createEvent.name.$touch()
+                                    },
+                                    blur: function ($event) {
+                                      return _vm.$v.createEvent.name.$touch()
+                                    },
+                                  },
+                                  model: {
+                                    value: _vm.createEvent.name,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.createEvent, "name", $$v)
+                                    },
+                                    expression: "createEvent.name",
+                                  },
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "v-row",
+                                  [
+                                    _c(
+                                      "v-col",
+                                      [
+                                        _c(
+                                          "v-menu",
+                                          {
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "nudge-right": 40,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "min-width": "auto",
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function (ref) {
+                                                  var on = ref.on
+                                                  var attrs = ref.attrs
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        _vm._b(
+                                                          {
+                                                            attrs: {
+                                                              label:
+                                                                "タイムゾーン",
+                                                              readonly: "",
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm.createEvent
+                                                                  .start,
+                                                              callback:
+                                                                function ($$v) {
+                                                                  _vm.$set(
+                                                                    _vm.createEvent,
+                                                                    "start",
+                                                                    $$v
+                                                                  )
+                                                                },
+                                                              expression:
+                                                                "createEvent.start",
+                                                            },
+                                                          },
+                                                          "v-text-field",
+                                                          attrs,
+                                                          false
+                                                        ),
+                                                        on
+                                                      )
+                                                    ),
+                                                  ]
+                                                },
+                                              },
+                                            ]),
+                                            model: {
+                                              value: _vm.start_date_form,
+                                              callback: function ($$v) {
+                                                _vm.start_date_form = $$v
+                                              },
+                                              expression: "start_date_form",
+                                            },
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c("v-date-picker", {
+                                              attrs: { locale: "ja-jp" },
+                                              on: {
+                                                input: function ($event) {
+                                                  _vm.start_date_form = false
+                                                },
+                                              },
+                                              model: {
+                                                value: _vm.createEvent.start,
+                                                callback: function ($$v) {
+                                                  _vm.$set(
+                                                    _vm.createEvent,
+                                                    "start",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "createEvent.start",
+                                              },
+                                            }),
+                                          ],
+                                          1
+                                        ),
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      [
+                                        _c(
+                                          "v-menu",
+                                          {
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "nudge-right": 40,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "min-width": "auto",
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function (ref) {
+                                                  var on = ref.on
+                                                  var attrs = ref.attrs
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        _vm._b(
+                                                          {
+                                                            attrs: {
+                                                              readonly: "",
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm.createEvent
+                                                                  .end,
+                                                              callback:
+                                                                function ($$v) {
+                                                                  _vm.$set(
+                                                                    _vm.createEvent,
+                                                                    "end",
+                                                                    $$v
+                                                                  )
+                                                                },
+                                                              expression:
+                                                                "createEvent.end",
+                                                            },
+                                                          },
+                                                          "v-text-field",
+                                                          attrs,
+                                                          false
+                                                        ),
+                                                        on
+                                                      )
+                                                    ),
+                                                  ]
+                                                },
+                                              },
+                                            ]),
+                                            model: {
+                                              value: _vm.end_date_form,
+                                              callback: function ($$v) {
+                                                _vm.end_date_form = $$v
+                                              },
+                                              expression: "end_date_form",
+                                            },
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c("v-date-picker", {
+                                              attrs: { locale: "ja-jp" },
+                                              on: {
+                                                input: function ($event) {
+                                                  _vm.end_date_form = false
+                                                },
+                                              },
+                                              model: {
+                                                value: _vm.createEvent.end,
+                                                callback: function ($$v) {
+                                                  _vm.$set(
+                                                    _vm.createEvent,
+                                                    "end",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "createEvent.end",
+                                              },
+                                            }),
+                                          ],
+                                          1
+                                        ),
+                                      ],
+                                      1
+                                    ),
+                                  ],
+                                  1
+                                ),
+                              ],
+                              1
+                            ),
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c("v-divider"),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "primary", text: "" },
+                                on: { click: _vm.validationEventform },
+                              },
+                              [_vm._v("\n                保存\n              ")]
+                            ),
+                          ],
+                          1
+                        ),
+                      ],
+                      1
+                    ),
+                  ],
+                  1
+                ),
+              ],
+              1
+            ),
           ],
           1
         ),
@@ -30833,7 +31258,7 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("h1", [_vm._v("一般設定")])
+  return _c("v-app", [_c("h1", [_vm._v("一般設定")])])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -30970,6 +31395,7 @@ var render = function () {
           [
             _vm._v(" "),
             _c("v-date-picker", {
+              attrs: { locale: "ja-jp" },
               on: {
                 input: function ($event) {
                   _vm.start_date_form = false
@@ -31052,6 +31478,7 @@ var render = function () {
           [
             _vm._v(" "),
             _c("v-date-picker", {
+              attrs: { locale: "ja-jp" },
               on: {
                 input: function ($event) {
                   _vm.end_date_form = false
