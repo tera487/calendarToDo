@@ -92,7 +92,7 @@
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon>
-                <v-icon>delete</v-icon>
+                <v-icon @click="deleteEvent(selectedEvent.id)">delete</v-icon>
               </v-btn>
               <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -458,6 +458,16 @@
       rnd (a, b) {
         return Math.floor((b - a + 1) * Math.random()) + a
       },
+
+      deleteEvent(id){
+        axios.delete(`/api/calendar/${id}`)
+            .then(() => {
+              this.events = (this.events).filter((v) => v.id !== id)
+              this.selectedOpen = false
+            })
+            .catch(err => console.log(err))
+            .finally(() => this.loading = false)
+      }
     },
 
     mounted(){

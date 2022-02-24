@@ -37,9 +37,9 @@ class CalendarController extends Controller
 
     public function destroy($id)
     {
-        $todo = ToDo::find($id);
-        $todo->delete();
+        $calendar = Calendar::find($id);
+        $calendar->delete();
 
-        return response()->json('ToDo deleted!');
+        return response()->json('deleted');
     }
 }

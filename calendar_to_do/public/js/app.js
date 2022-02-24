@@ -5748,9 +5748,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return event.color;
   }), _defineProperty(_methods, "rnd", function rnd(a, b) {
     return Math.floor((b - a + 1) * Math.random()) + a;
+  }), _defineProperty(_methods, "deleteEvent", function deleteEvent(id) {
+    var _this4 = this;
+
+    axios["delete"]("/api/calendar/".concat(id)).then(function () {
+      _this4.events = _this4.events.filter(function (v) {
+        return v.id !== id;
+      });
+      _this4.selectedOpen = false;
+    })["catch"](function (err) {
+      return console.log(err);
+    })["finally"](function () {
+      return _this4.loading = false;
+    });
   }), _methods),
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     axios.get('/api/calendar').then(function (response) {
       var data = response.data;
@@ -5759,11 +5772,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         response.data[i].start = new Date(response.data[i].start);
         response.data[i].end = new Date(response.data[i].end);
         response.data[i].timed = true;
-        response.data[i].color = _this4.rndElement(_this4.colors);
+        response.data[i].color = _this5.rndElement(_this5.colors);
         response.data[i].id = response.data[i].id;
       }
 
-      _this4.events = response.data;
+      _this5.events = response.data;
     });
   },
   computed: {
@@ -30996,7 +31009,19 @@ var render = function () {
                         _c(
                           "v-btn",
                           { attrs: { icon: "" } },
-                          [_c("v-icon", [_vm._v("delete")])],
+                          [
+                            _c(
+                              "v-icon",
+                              {
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.deleteEvent(_vm.selectedEvent.id)
+                                  },
+                                },
+                              },
+                              [_vm._v("delete")]
+                            ),
+                          ],
                           1
                         ),
                         _vm._v(" "),
