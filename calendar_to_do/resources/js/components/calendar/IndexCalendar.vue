@@ -1,19 +1,38 @@
 <template>
   <v-app>
     <div>
-      {{events}}
+      <v-row  align="center">
+        <v-col>
+            <v-list-item-icon>
+              <v-icon>event</v-icon>
+              <h3 class="m-0">Calendar</h3>
+            </v-list-item-icon>
+        </v-col>
+        <v-col class="text-right">
+          <v-btn
+            icon
+            class="ma-2"
+            @click="$refs.calendar.prev()"
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+
+          <v-btn
+            icon
+            class="ma-2"
+            @click="$refs.calendar.next()"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+
+        </v-col>
+      </v-row>
+
       <v-sheet
         tile
         height="54"
         class="d-flex"
       >
-        <v-btn
-          icon
-          class="ma-2"
-          @click="$refs.calendar.prev()"
-        >
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
         <v-select
           v-model="type"
           :items="types"
@@ -42,14 +61,8 @@
           class="ma-2"
         ></v-select>
         <v-spacer></v-spacer>
-        <v-btn
-          icon
-          class="ma-2"
-          @click="$refs.calendar.next()"
-        >
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
       </v-sheet>
+
       <v-sheet height="600">
         <v-calendar
           ref="calendar"

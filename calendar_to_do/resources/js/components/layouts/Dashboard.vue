@@ -58,7 +58,7 @@ export default {
         cards: ['Today', 'Yesterday'],
         drawer: null,
         links: [
-            ['indexCalendar','list', 'Inbox'],
+            ['indexCalendar','event', 'calendar'],
             ['indexToDo','task', 'Todo'],
             ['indexUser','account_circle', 'account'],
             ['indexGeneralSetting','settings', 'setting'],
