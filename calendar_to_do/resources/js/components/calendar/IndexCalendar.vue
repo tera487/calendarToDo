@@ -89,7 +89,7 @@
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
               <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
+                <v-icon @click="editEvent">mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon>
                 <v-icon @click="deleteEvent(selectedEvent.id)">delete</v-icon>
@@ -119,6 +119,7 @@
           <v-dialog
             v-model="dialog"
             width="500"
+            @click:outside="resetCreateEvent"
           >
 
             <v-card>
@@ -346,21 +347,38 @@
         }
       },
 
+      editEvent(){
+        this.dialog = true
+        this.createEvent = this.selectedEvent
+        this.createEvent.start = this.dateFormat(this.selectedEvent.start)
+        this.createEvent.end = this.dateFormat(this.selectedEvent.end)
+      },
       validationEventform(){
         this.$v.$touch();
         if (!this.$v.$invalid) {
           this.dialog = false
-          axios.post('/api/calendar', this.createEvent)
-            .then((res) => {
-              this.createEvent.start = new Date(this.createEvent.start)
-              this.createEvent.end = new Date(this.createEvent.end)
-              this.createEvent.id =  res.data;
-
-              this.events.push(this.createEvent)
-              this.resetCreateEvent()
-            })
-            .catch(err => console.log(err))
-            .finally(() => this.loading = false)
+          if(this.createEvent.id !== this.selectedEvent.id){
+            axios.post('/api/calendar', this.createEvent)
+              .then((res) => {
+                this.createEvent.start = new Date(this.createEvent.start)
+                this.createEvent.end = new Date(this.createEvent.end)
+                this.createEvent.id =  res.data;
+  
+                this.events.push(this.createEvent)
+                this.resetCreateEvent()
+              })
+              .catch(err => console.log(err))
+              .finally(() => this.loading = false)
+          }else{
+            axios.patch(`/api/calendar/${this.createEvent.id}`, this.createEvent)
+              .then((res) => {
+                this.createEvent.start = new Date(this.createEvent.start)
+                this.createEvent.end = new Date(this.createEvent.end)
+                this.resetCreateEvent()
+              })
+              .catch(err => console.log(err))
+              .finally(() => this.loading = false)
+          }
         }
       },
 
