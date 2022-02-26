@@ -70,29 +70,34 @@ const Routes = [
         {
             name:"dashboard",
             path: '/',
+            meta:{middleware:"auth"},
             component: IndexCalendar,
         },
         //accout
         {
             name: 'indexUser',
             path: '/user',
+            meta:{middleware:"auth"},
             component: IndexUser,
         },
         // todo
         {
             name: 'indexToDo',
             path: '/todo',
+            meta:{middleware:"auth"},
             component: IndexToDo,
         },
         {
             name: 'createToDo',
             path: '/todo/create',
+            meta:{middleware:"auth"},
             component: CreateToDo,
         },
         //calendar
         {
             name: 'indexCalendar',
             path: '/calendar',
+            meta:{middleware:"auth"},
             component: IndexCalendar,
         },
 
@@ -100,6 +105,7 @@ const Routes = [
         {
             name: 'indexGeneralSetting',
             path: '/generalSetting',
+            meta:{middleware:"auth"},
             component: IndexGeneralSetting,
         },
 
