@@ -34,7 +34,7 @@
         class="d-flex"
       >
         <v-select
-          v-model="type"
+          v-model="calendar_json.type"
           :items="types"
           dense
           outlined
@@ -43,7 +43,7 @@
           label="type"
         ></v-select>
         <v-select
-          v-model="mode"
+          v-model="calendar_json.mode"
           :items="modes"
           dense
           outlined
@@ -52,7 +52,7 @@
           class="ma-2"
         ></v-select>
         <v-select
-          v-model="weekday"
+          v-model="calendar_json.weekday"
           :items="weekdays"
           dense
           outlined
@@ -67,10 +67,10 @@
         <v-calendar
           ref="calendar"
           v-model="value"
-          :weekdays="weekday"
-          :type="type"
+          :weekdays="calendar_json.weekday"
+          :type="calendar_json.type"
           :events="events"
-          :event-overlap-mode="mode"
+          :event-overlap-mode="calendar_json.mode"
           :event-overlap-threshold="30"
           :event-color="getEventColor"
           @click:date="viewDay"
@@ -105,7 +105,7 @@
                 <v-icon @click="editEvent">mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon>
-                <v-icon @click="deleteEvent(selectedEvent.id)">delete</v-icon>
+                <v-icon @click="deleteConfirm(selectedEvent.id)">delete</v-icon>
               </v-btn>
               <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -128,6 +128,8 @@
             </v-card-actions>
           </v-card>
         </v-menu>
+
+        <!-- スケジュール追加・編集のダイアログ -->
         <div class="text-center">
           <v-dialog
             v-model="dialog"
@@ -224,6 +226,19 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- 削除確認ダイアログ-->
+          <v-dialog v-model="deleteDialog" persistent max-width="290">
+            <v-card>
+              <v-card-title class="headline">{{selectedEvent.name}}</v-card-title>
+              <v-card-text>削除してもよろしいですか？</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="green darken-1" text @click="deleteDialog = false">キャンセル</v-btn>
+                <v-btn color="green darken-1" text @click="deleteEvent(selectedEvent.id)">削除</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-sheet>
     </div>
@@ -242,17 +257,20 @@
       },
     },
     data: () => ({
-      type: 'week',
       types: ['month', 'week', 'day', '4day'],
-      mode: 'column',
       modes: ['stack', 'column'],
-      weekday: [0, 1, 2, 3, 4, 5, 6],
       weekdays: [
         { text: 'Sun - Sat', value: [0, 1, 2, 3, 4, 5, 6] },
         { text: 'Mon - Sun', value: [1, 2, 3, 4, 5, 6, 0] },
         { text: 'Mon - Fri', value: [1, 2, 3, 4, 5] },
         { text: 'Mon, Wed, Fri', value: [1, 3, 5] },
       ],
+
+      calendar_json:{
+        type: 'week',
+        mode: 'column',
+        weekday: [0, 1, 2, 3, 4, 5, 6],
+      },
       value: '',
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
@@ -277,8 +295,13 @@
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
+
+      deleteDialog: false,
     }),
     methods: {
+      deleteConfirm(id){
+        this.deleteDialog = true;
+      },
       showEvent ({ nativeEvent, event }) {
         const open = () => {
           this.selectedEvent = event
@@ -298,7 +321,7 @@
       // 日付をclickした際にその日付に遷移
       viewDay ({ date }) {
         this.focus = date
-        this.type = 'day'
+        this.calendar_json.type = 'day'
       },
 
       startDrag ({ event, timed }) {
@@ -495,6 +518,7 @@
             .then(() => {
               this.events = (this.events).filter((v) => v.id !== id)
               this.selectedOpen = false
+              this.deleteDialog = false;
             })
             .catch(err => console.log(err))
             .finally(() => this.loading = false)
@@ -502,6 +526,12 @@
     },
 
     mounted(){
+      axios
+      .get('/api/generalSetting')
+      .then(response => {
+        this.calendar_json = response.data.calendar_json;
+       });
+       
       axios
       .get('/api/calendar')
       .then(response => {

@@ -5510,6 +5510,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   validations: {
@@ -5527,11 +5542,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      type: 'week',
       types: ['month', 'week', 'day', '4day'],
-      mode: 'column',
       modes: ['stack', 'column'],
-      weekday: [0, 1, 2, 3, 4, 5, 6],
       weekdays: [{
         text: 'Sun - Sat',
         value: [0, 1, 2, 3, 4, 5, 6]
@@ -5545,6 +5557,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         text: 'Mon, Wed, Fri',
         value: [1, 3, 5]
       }],
+      calendar_json: {
+        type: 'week',
+        mode: 'column',
+        weekday: [0, 1, 2, 3, 4, 5, 6]
+      },
       value: '',
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
@@ -5564,10 +5581,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       end_date_form: null,
       selectedEvent: {},
       selectedElement: null,
-      selectedOpen: false
+      selectedOpen: false,
+      deleteDialog: false
     };
   },
   methods: (_methods = {
+    deleteConfirm: function deleteConfirm(id) {
+      this.deleteDialog = true;
+    },
     showEvent: function showEvent(_ref) {
       var _this = this;
 
@@ -5601,7 +5622,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     viewDay: function viewDay(_ref2) {
       var date = _ref2.date;
       this.focus = date;
-      this.type = 'day';
+      this.calendar_json.type = 'day';
     },
     startDrag: function startDrag(_ref3) {
       var event = _ref3.event,
@@ -5790,6 +5811,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return v.id !== id;
       });
       _this4.selectedOpen = false;
+      _this4.deleteDialog = false;
     })["catch"](function (err) {
       return console.log(err);
     })["finally"](function () {
@@ -5799,6 +5821,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     var _this5 = this;
 
+    axios.get('/api/generalSetting').then(function (response) {
+      _this5.calendar_json = response.data.calendar_json;
+    });
     axios.get('/api/calendar').then(function (response) {
       var data = response.data;
 
@@ -6078,8 +6103,6 @@ __webpack_require__.r(__webpack_exports__);
     calendar_json: {
       handler: function handler(newCalendarJson, oldCalendarJson) {
         if (oldCalendarJson.type !== null && oldCalendarJson.mode !== null && oldCalendarJson.weekday) {
-          console.log("OK");
-          console.log(this.calendar_json);
           axios.patch('api/generalSetting/1', this.calendar_json);
         }
       },
@@ -31077,11 +31100,11 @@ var render = function () {
                 label: "type",
               },
               model: {
-                value: _vm.type,
+                value: _vm.calendar_json.type,
                 callback: function ($$v) {
-                  _vm.type = $$v
+                  _vm.$set(_vm.calendar_json, "type", $$v)
                 },
-                expression: "type",
+                expression: "calendar_json.type",
               },
             }),
             _vm._v(" "),
@@ -31095,11 +31118,11 @@ var render = function () {
                 label: "event-overlap-mode",
               },
               model: {
-                value: _vm.mode,
+                value: _vm.calendar_json.mode,
                 callback: function ($$v) {
-                  _vm.mode = $$v
+                  _vm.$set(_vm.calendar_json, "mode", $$v)
                 },
-                expression: "mode",
+                expression: "calendar_json.mode",
               },
             }),
             _vm._v(" "),
@@ -31113,11 +31136,11 @@ var render = function () {
                 label: "weekdays",
               },
               model: {
-                value: _vm.weekday,
+                value: _vm.calendar_json.weekday,
                 callback: function ($$v) {
-                  _vm.weekday = $$v
+                  _vm.$set(_vm.calendar_json, "weekday", $$v)
                 },
-                expression: "weekday",
+                expression: "calendar_json.weekday",
               },
             }),
             _vm._v(" "),
@@ -31133,10 +31156,10 @@ var render = function () {
             _c("v-calendar", {
               ref: "calendar",
               attrs: {
-                weekdays: _vm.weekday,
-                type: _vm.type,
+                weekdays: _vm.calendar_json.weekday,
+                type: _vm.calendar_json.type,
                 events: _vm.events,
-                "event-overlap-mode": _vm.mode,
+                "event-overlap-mode": _vm.calendar_json.mode,
                 "event-overlap-threshold": 30,
                 "event-color": _vm.getEventColor,
                 locale: "ja-jp",
@@ -31223,7 +31246,9 @@ var render = function () {
                               {
                                 on: {
                                   click: function ($event) {
-                                    return _vm.deleteEvent(_vm.selectedEvent.id)
+                                    return _vm.deleteConfirm(
+                                      _vm.selectedEvent.id
+                                    )
                                   },
                                 },
                               },
@@ -31583,6 +31608,70 @@ var render = function () {
                                 on: { click: _vm.validationEventform },
                               },
                               [_vm._v("\n                保存\n              ")]
+                            ),
+                          ],
+                          1
+                        ),
+                      ],
+                      1
+                    ),
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-dialog",
+                  {
+                    attrs: { persistent: "", "max-width": "290" },
+                    model: {
+                      value: _vm.deleteDialog,
+                      callback: function ($$v) {
+                        _vm.deleteDialog = $$v
+                      },
+                      expression: "deleteDialog",
+                    },
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      [
+                        _c("v-card-title", { staticClass: "headline" }, [
+                          _vm._v(_vm._s(_vm.selectedEvent.name)),
+                        ]),
+                        _vm._v(" "),
+                        _c("v-card-text", [
+                          _vm._v("削除してもよろしいですか？"),
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "green darken-1", text: "" },
+                                on: {
+                                  click: function ($event) {
+                                    _vm.deleteDialog = false
+                                  },
+                                },
+                              },
+                              [_vm._v("キャンセル")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "green darken-1", text: "" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.deleteEvent(_vm.selectedEvent.id)
+                                  },
+                                },
+                              },
+                              [_vm._v("削除")]
                             ),
                           ],
                           1
