@@ -37,6 +37,11 @@
                     </v-list-item>
                 </router-link>
             </v-list>
+            <v-container>
+                <v-row justify="center">
+                    <v-date-picker v-model="picker" no-title width='inherit' locale="ja-jp"></v-date-picker>
+                </v-row>
+            </v-container>
             </v-navigation-drawer>
 
             <v-main>
@@ -63,7 +68,8 @@ export default {
             ['indexUser','account_circle', 'account'],
             ['indexGeneralSetting','settings', 'setting'],
         ],
-        user:this.$store.state.auth.user
+        user:this.$store.state.auth.user,
+        picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       }
     },
     methods:{

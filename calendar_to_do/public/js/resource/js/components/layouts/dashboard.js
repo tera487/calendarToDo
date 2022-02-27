@@ -76,6 +76,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "dashboard-layout",
@@ -84,7 +89,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       cards: ['Today', 'Yesterday'],
       drawer: null,
       links: [['indexCalendar', 'event', 'calendar'], ['indexToDo', 'task', 'Todo'], ['indexUser', 'account_circle', 'account'], ['indexGeneralSetting', 'settings', 'setting']],
-      user: this.$store.state.auth.user
+      user: this.$store.state.auth.user,
+      picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)
     };
   },
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapActions)({
@@ -340,6 +346,34 @@ var render = function () {
                     1
                   )
                 }),
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-container",
+                [
+                  _c(
+                    "v-row",
+                    { attrs: { justify: "center" } },
+                    [
+                      _c("v-date-picker", {
+                        attrs: {
+                          "no-title": "",
+                          width: "inherit",
+                          locale: "ja-jp",
+                        },
+                        model: {
+                          value: _vm.picker,
+                          callback: function ($$v) {
+                            _vm.picker = $$v
+                          },
+                          expression: "picker",
+                        },
+                      }),
+                    ],
+                    1
+                  ),
+                ],
                 1
               ),
             ],
