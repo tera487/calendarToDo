@@ -5499,32 +5499,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   validations: {
@@ -31048,8 +31022,26 @@ var render = function () {
             _vm._v(" "),
             _c(
               "v-col",
-              { staticClass: "text-right" },
+              { staticClass: "text-right d-flex" },
               [
+                _c("v-select", {
+                  staticClass: "ma-2",
+                  attrs: {
+                    items: _vm.types,
+                    dense: "",
+                    outlined: "",
+                    "hide-details": "",
+                    label: "type",
+                  },
+                  model: {
+                    value: _vm.calendar_json.type,
+                    callback: function ($$v) {
+                      _vm.$set(_vm.calendar_json, "type", $$v)
+                    },
+                    expression: "calendar_json.type",
+                  },
+                }),
+                _vm._v(" "),
                 _c(
                   "v-btn",
                   {
@@ -31082,69 +31074,6 @@ var render = function () {
               ],
               1
             ),
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "v-sheet",
-          { staticClass: "d-flex", attrs: { tile: "", height: "54" } },
-          [
-            _c("v-select", {
-              staticClass: "ma-2",
-              attrs: {
-                items: _vm.types,
-                dense: "",
-                outlined: "",
-                "hide-details": "",
-                label: "type",
-              },
-              model: {
-                value: _vm.calendar_json.type,
-                callback: function ($$v) {
-                  _vm.$set(_vm.calendar_json, "type", $$v)
-                },
-                expression: "calendar_json.type",
-              },
-            }),
-            _vm._v(" "),
-            _c("v-select", {
-              staticClass: "ma-2",
-              attrs: {
-                items: _vm.modes,
-                dense: "",
-                outlined: "",
-                "hide-details": "",
-                label: "event-overlap-mode",
-              },
-              model: {
-                value: _vm.calendar_json.mode,
-                callback: function ($$v) {
-                  _vm.$set(_vm.calendar_json, "mode", $$v)
-                },
-                expression: "calendar_json.mode",
-              },
-            }),
-            _vm._v(" "),
-            _c("v-select", {
-              staticClass: "ma-2",
-              attrs: {
-                items: _vm.weekdays,
-                dense: "",
-                outlined: "",
-                "hide-details": "",
-                label: "weekdays",
-              },
-              model: {
-                value: _vm.calendar_json.weekday,
-                callback: function ($$v) {
-                  _vm.$set(_vm.calendar_json, "weekday", $$v)
-                },
-                expression: "calendar_json.weekday",
-              },
-            }),
-            _vm._v(" "),
-            _c("v-spacer"),
           ],
           1
         ),

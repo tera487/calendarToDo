@@ -8,7 +8,16 @@
               <h3 class="m-0">Calendar</h3>
             </v-list-item-icon>
         </v-col>
-        <v-col class="text-right">
+        <v-col class="text-right d-flex">
+          <v-select
+          v-model="calendar_json.type"
+            :items="types"
+            dense
+            outlined
+            hide-details
+            class="ma-2"
+            label="type"
+          ></v-select>
           <v-btn
             icon
             class="ma-2"
@@ -27,41 +36,6 @@
 
         </v-col>
       </v-row>
-
-      <v-sheet
-        tile
-        height="54"
-        class="d-flex"
-      >
-        <v-select
-          v-model="calendar_json.type"
-          :items="types"
-          dense
-          outlined
-          hide-details
-          class="ma-2"
-          label="type"
-        ></v-select>
-        <v-select
-          v-model="calendar_json.mode"
-          :items="modes"
-          dense
-          outlined
-          hide-details
-          label="event-overlap-mode"
-          class="ma-2"
-        ></v-select>
-        <v-select
-          v-model="calendar_json.weekday"
-          :items="weekdays"
-          dense
-          outlined
-          hide-details
-          label="weekdays"
-          class="ma-2"
-        ></v-select>
-        <v-spacer></v-spacer>
-      </v-sheet>
 
       <v-sheet height="600">
         <v-calendar
