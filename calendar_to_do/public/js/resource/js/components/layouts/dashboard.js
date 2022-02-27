@@ -83,7 +83,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       cards: ['Today', 'Yesterday'],
       drawer: null,
-      links: [['indexCalendar', 'list', 'Inbox'], ['indexToDo', 'task', 'Todo'], ['indexUser', 'account_circle', 'account'], ['indexGeneralSetting', 'settings', 'setting']],
+      links: [['indexCalendar', 'event', 'calendar'], ['indexToDo', 'task', 'Todo'], ['indexUser', 'account_circle', 'account'], ['indexGeneralSetting', 'settings', 'setting']],
       user: this.$store.state.auth.user
     };
   },

@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 class GeneralSettingController extends Controller
 {
     public function index(){
-        $general_setting = GeneralSetting::first()->toArray();
+        if(GeneralSetting::count() !== 0){
+            $general_setting = GeneralSetting::first();
+        }else{
+            $general_setting = new GeneralSetting;
+        }
         return $general_setting;
     }
 
-    public function store(ToDoRequest $request){
+    public function store(Request $request){
         $attributes = $request->only(['title', 'content', 'start_date','end_date']);
-        ToDo::create($attributes);
+        GeneralSetting::create($attributes);
         return response()->json('ToDo created!');
     }
 
@@ -25,10 +29,20 @@ class GeneralSettingController extends Controller
     }
 
 
-    public function update($id, ToDoRequest $request){
-        $todo = ToDo::find($id);
-        $todo->update($request->all());
-        return response()->json('ToDo updated!');
+    public function update(Request $request){
+        if(GeneralSetting::count() !== 0){
+            $general_setting = GeneralSetting::first();
+        }else{
+            $general_setting = new GeneralSetting;
+        }
+        $general_setting->calendar_json = [
+            'type' => $request->type,
+            'mode' => $request->mode,
+            'weekday' => $request->weekday,
+        ];
+
+        $general_setting->save();
+        return response()->json($general_setting);
     }
 
     public function destroy($id)
