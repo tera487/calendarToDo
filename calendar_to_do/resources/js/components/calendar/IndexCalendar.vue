@@ -79,7 +79,7 @@
                 <v-icon @click="editEvent">mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon>
-                <v-icon @click="deleteConfirm(selectedEvent.id)">delete</v-icon>
+                <v-icon @click="deleteConfirm()">delete</v-icon>
               </v-btn>
               <v-btn icon>
                 <v-icon>mdi-dots-vertical</v-icon>
@@ -137,21 +137,48 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                            v-model="createEvent.start"
+                            v-model="start_form.start_date"
                             label="タイムゾーン"
                             readonly
                             v-bind="attrs"
                             v-on="on"
-                            :error-messages="startErrors"
-                            @input="$v.createEvent.start.$touch()"
-                            @blur="$v.createEvent.start.$touch()"
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           locale="ja-jp"
-                          v-model="createEvent.start"
+                          v-model="start_form.start_date"
+                          @change="integrationDate('start')"
                           @input="start_date_form = false"
-                        ></v-date-picker>
+                        ></v-date-picker>  
+                      </v-menu>
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        ref="start_time_form"
+                        v-model="start_time_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="start_form.start_time"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="start_form.start_time"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="start_time_form"
+                          v-model="start_form.start_time"
+                          full-width
+                          @change="integrationDate('start')"
+                          @click:minute="$refs.start_time_form.save(start_form.start_time)"
+                        ></v-time-picker>
                       </v-menu>
                     </v-col>
                     <v-col>
@@ -165,20 +192,47 @@
                       >
                         <template v-slot:activator="{ on, attrs }">
                           <v-text-field
-                            v-model="createEvent.end"
+                            v-model="end_form.end_date"
                             readonly
                             v-bind="attrs"
                             v-on="on"
-                            :error-messages="endErrors"
-                            @input="$v.createEvent.end.$touch()"
-                            @blur="$v.createEvent.end.$touch()"
                           ></v-text-field>
                         </template>
                         <v-date-picker
                           locale="ja-jp"
-                          v-model="createEvent.end"
+                          v-model="end_form.end_date"
+                          @change="integrationDate('end')"
                           @input="end_date_form = false"
                         ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+                     <v-col>
+                      <v-menu
+                        ref="end_time_form"
+                        v-model="end_time_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="end_form.end_time"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="end_form.end_time"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="end_time_form"
+                          v-model="end_form.end_time"
+                          full-width
+                          @change="integrationDate('end')"
+                          @click:minute="$refs.end_time_form.save(end_form.end_time)"
+                        ></v-time-picker>
                       </v-menu>
                     </v-col>
 
@@ -257,14 +311,26 @@
         start:null,
         end:null
       },
+
+      start_date_form:null,
+      start_time_form:null,
+      start_form:{
+        start_date:null,
+        start_time:null,
+      },
+      
       createStart: null,
       extendOriginal: null,
 
       numberId:0,
       dialog: false,
 
-      start_date_form:null,
       end_date_form:null,
+      end_time_form:null,
+      end_form:{
+        end_date:null,
+        end_time:null,
+      },
 
       selectedEvent: {},
       selectedElement: null,
@@ -273,7 +339,14 @@
       deleteDialog: false,
     }),
     methods: {
-      deleteConfirm(id){
+      integrationDate(status){
+        if(status == "start"){
+          this.createEvent.start = `${this.start_form.start_date} ${this.start_form.start_time}`;
+        }else{
+          this.createEvent.end = `${this.end_form.end_date} ${this.end_form.end_time}`;
+        }
+      },
+      deleteConfirm(){
         this.deleteDialog = true;
       },
       showEvent ({ nativeEvent, event }) {
@@ -360,9 +433,13 @@
       editEvent(){
         this.dialog = true
         this.createEvent = this.selectedEvent
-        this.createEvent.start = this.dateFormat(this.selectedEvent.start)
+        this.createEvent.start = this.dateFormat(this.selectedEvent.start);
+        this.settingStartForm();
+
         this.createEvent.end = this.dateFormat(this.selectedEvent.end)
+        this.settingEndForm();
       },
+
       validationEventform(){
         this.$v.$touch();
         if (!this.$v.$invalid) {
@@ -400,12 +477,26 @@
         }
       },
 
+      settingStartForm(){
+        const timezoneStart = this.createEvent.start.split(' ' );
+        this.start_form.start_date = timezoneStart[0];
+        this.start_form.start_time = timezoneStart[1];
+      },
+      settingEndForm(){
+        const timezoneEnd = this.createEvent.end.split(' ' );
+        this.end_form.end_date = timezoneEnd[0];
+        this.end_form.end_time = timezoneEnd[1];
+      },
+
       //	マウスボタンが離されたとき
       endDrag () {
         if(this.createEvent.name !== null){
           this.dialog = true
           this.createEvent.start = this.dateFormat(this.createEvent.start);
+          this.settingStartForm();
+
           this.createEvent.end = this.dateFormat(this.createEvent.end);
+          this.settingEndForm();
         }
         
         if(this.dragEvent !== null){
@@ -430,7 +521,7 @@
 
       dateFormat(date){
         const formatedDate =  new Date(date) ;
-        return formatedDate.getFullYear() + "-" + (formatedDate.getMonth() + 1) + "-" + formatedDate.getDate() + " " + formatedDate.getHours() + ":" + formatedDate.getMinutes() + ":" + formatedDate.getSeconds();
+        return `${formatedDate.getFullYear()}-${(formatedDate.getMonth() + 1).toString().padStart(2, '0')}-${formatedDate.getDate().toString().padStart(2, '0')} ${formatedDate.getHours().toString().padStart(2, '0')}:${formatedDate.getMinutes().toString().padStart(2, '0')}`;
       },
 
       cancelDrag () {
@@ -521,24 +612,24 @@
       });
     },
     computed: {
-    nameErrors () {
-      const errors = []
-      if (!this.$v.createEvent.name.$dirty) return errors
-      !this.$v.createEvent.name.required && errors.push('タイトルは必須です。')
-      return errors
+      nameErrors () {
+        const errors = []
+        if (!this.$v.createEvent.name.$dirty) return errors
+        !this.$v.createEvent.name.required && errors.push('タイトルは必須です。')
+        return errors
+      },
+      startErrors () {
+        const errors = []
+        if (!this.$v.createEvent.start.$dirty) return errors
+        !this.$v.createEvent.start.required && errors.push('タイムゾーンは必須です。')
+        return errors
+      },
+      endErrors () {
+        const errors = []
+        if (!this.$v.createEvent.end.$dirty) return errors
+        !this.$v.createEvent.end.reuired && errors.push('タイムゾーンは必須です。')
+        return errors
+      },
     },
-    startErrors () {
-      const errors = []
-      if (!this.$v.createEvent.start.$dirty) return errors
-      !this.$v.createEvent.start.required && errors.push('タイムゾーンは必須です。')
-      return errors
-    },
-    endErrors () {
-      const errors = []
-      if (!this.$v.createEvent.end.$dirty) return errors
-      !this.$v.createEvent.end.required && errors.push('タイムゾーンは必須です。')
-      return errors
-    },
-  },
   }
 </script>

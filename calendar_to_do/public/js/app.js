@@ -5499,6 +5499,60 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   validations: {
@@ -5547,12 +5601,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         start: null,
         end: null
       },
+      start_date_form: null,
+      start_time_form: null,
+      start_form: {
+        start_date: null,
+        start_time: null
+      },
       createStart: null,
       extendOriginal: null,
       numberId: 0,
       dialog: false,
-      start_date_form: null,
       end_date_form: null,
+      end_time_form: null,
+      end_form: {
+        end_date: null,
+        end_time: null
+      },
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
@@ -5560,7 +5624,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   methods: (_methods = {
-    deleteConfirm: function deleteConfirm(id) {
+    integrationDate: function integrationDate(status) {
+      if (status == "start") {
+        this.createEvent.start = "".concat(this.start_form.start_date, " ").concat(this.start_form.start_time);
+      } else {
+        this.createEvent.end = "".concat(this.end_form.end_date, " ").concat(this.end_form.end_time);
+      }
+    },
+    deleteConfirm: function deleteConfirm() {
       this.deleteDialog = true;
     },
     showEvent: function showEvent(_ref) {
@@ -5657,7 +5728,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.dialog = true;
       this.createEvent = this.selectedEvent;
       this.createEvent.start = this.dateFormat(this.selectedEvent.start);
+      this.settingStartForm();
       this.createEvent.end = this.dateFormat(this.selectedEvent.end);
+      this.settingEndForm();
     },
     validationEventform: function validationEventform() {
       var _this2 = this;
@@ -5702,6 +5775,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         end: null
       };
     },
+    settingStartForm: function settingStartForm() {
+      var timezoneStart = this.createEvent.start.split(' ');
+      this.start_form.start_date = timezoneStart[0];
+      this.start_form.start_time = timezoneStart[1];
+    },
+    settingEndForm: function settingEndForm() {
+      var timezoneEnd = this.createEvent.end.split(' ');
+      this.end_form.end_date = timezoneEnd[0];
+      this.end_form.end_time = timezoneEnd[1];
+    },
     //	マウスボタンが離されたとき
     endDrag: function endDrag() {
       var _this3 = this;
@@ -5709,7 +5792,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (this.createEvent.name !== null) {
         this.dialog = true;
         this.createEvent.start = this.dateFormat(this.createEvent.start);
+        this.settingStartForm();
         this.createEvent.end = this.dateFormat(this.createEvent.end);
+        this.settingEndForm();
       }
 
       if (this.dragEvent !== null) {
@@ -5732,7 +5817,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     dateFormat: function dateFormat(date) {
       var formatedDate = new Date(date);
-      return formatedDate.getFullYear() + "-" + (formatedDate.getMonth() + 1) + "-" + formatedDate.getDate() + " " + formatedDate.getHours() + ":" + formatedDate.getMinutes() + ":" + formatedDate.getSeconds();
+      return "".concat(formatedDate.getFullYear(), "-").concat((formatedDate.getMonth() + 1).toString().padStart(2, '0'), "-").concat(formatedDate.getDate().toString().padStart(2, '0'), " ").concat(formatedDate.getHours().toString().padStart(2, '0'), ":").concat(formatedDate.getMinutes().toString().padStart(2, '0'));
     },
     cancelDrag: function cancelDrag() {
       if (this.createEvent) {
@@ -5828,7 +5913,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     endErrors: function endErrors() {
       var errors = [];
       if (!this.$v.createEvent.end.$dirty) return errors;
-      !this.$v.createEvent.end.required && errors.push('タイムゾーンは必須です。');
+      !this.$v.createEvent.end.reuired && errors.push('タイムゾーンは必須です。');
       return errors;
     }
   }
@@ -31175,9 +31260,7 @@ var render = function () {
                               {
                                 on: {
                                   click: function ($event) {
-                                    return _vm.deleteConfirm(
-                                      _vm.selectedEvent.id
-                                    )
+                                    return _vm.deleteConfirm()
                                   },
                                 },
                               },
@@ -31331,35 +31414,21 @@ var render = function () {
                                                               label:
                                                                 "タイムゾーン",
                                                               readonly: "",
-                                                              "error-messages":
-                                                                _vm.startErrors,
-                                                            },
-                                                            on: {
-                                                              input: function (
-                                                                $event
-                                                              ) {
-                                                                return _vm.$v.createEvent.start.$touch()
-                                                              },
-                                                              blur: function (
-                                                                $event
-                                                              ) {
-                                                                return _vm.$v.createEvent.start.$touch()
-                                                              },
                                                             },
                                                             model: {
                                                               value:
-                                                                _vm.createEvent
-                                                                  .start,
+                                                                _vm.start_form
+                                                                  .start_date,
                                                               callback:
                                                                 function ($$v) {
                                                                   _vm.$set(
-                                                                    _vm.createEvent,
-                                                                    "start",
+                                                                    _vm.start_form,
+                                                                    "start_date",
                                                                     $$v
                                                                   )
                                                                 },
                                                               expression:
-                                                                "createEvent.start",
+                                                                "start_form.start_date",
                                                             },
                                                           },
                                                           "v-text-field",
@@ -31386,22 +31455,158 @@ var render = function () {
                                             _c("v-date-picker", {
                                               attrs: { locale: "ja-jp" },
                                               on: {
+                                                change: function ($event) {
+                                                  return _vm.integrationDate(
+                                                    "start"
+                                                  )
+                                                },
                                                 input: function ($event) {
                                                   _vm.start_date_form = false
                                                 },
                                               },
                                               model: {
-                                                value: _vm.createEvent.start,
+                                                value:
+                                                  _vm.start_form.start_date,
                                                 callback: function ($$v) {
                                                   _vm.$set(
-                                                    _vm.createEvent,
-                                                    "start",
+                                                    _vm.start_form,
+                                                    "start_date",
                                                     $$v
                                                   )
                                                 },
-                                                expression: "createEvent.start",
+                                                expression:
+                                                  "start_form.start_date",
                                               },
                                             }),
+                                          ],
+                                          1
+                                        ),
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      [
+                                        _c(
+                                          "v-menu",
+                                          {
+                                            ref: "start_time_form",
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "nudge-right": 40,
+                                              "return-value":
+                                                _vm.start_form.start_time,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "max-width": "290px",
+                                              "min-width": "290px",
+                                            },
+                                            on: {
+                                              "update:returnValue": function (
+                                                $event
+                                              ) {
+                                                return _vm.$set(
+                                                  _vm.start_form,
+                                                  "start_time",
+                                                  $event
+                                                )
+                                              },
+                                              "update:return-value": function (
+                                                $event
+                                              ) {
+                                                return _vm.$set(
+                                                  _vm.start_form,
+                                                  "start_time",
+                                                  $event
+                                                )
+                                              },
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function (ref) {
+                                                  var on = ref.on
+                                                  var attrs = ref.attrs
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        _vm._b(
+                                                          {
+                                                            attrs: {
+                                                              readonly: "",
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm.start_form
+                                                                  .start_time,
+                                                              callback:
+                                                                function ($$v) {
+                                                                  _vm.$set(
+                                                                    _vm.start_form,
+                                                                    "start_time",
+                                                                    $$v
+                                                                  )
+                                                                },
+                                                              expression:
+                                                                "start_form.start_time",
+                                                            },
+                                                          },
+                                                          "v-text-field",
+                                                          attrs,
+                                                          false
+                                                        ),
+                                                        on
+                                                      )
+                                                    ),
+                                                  ]
+                                                },
+                                              },
+                                            ]),
+                                            model: {
+                                              value: _vm.start_time_form,
+                                              callback: function ($$v) {
+                                                _vm.start_time_form = $$v
+                                              },
+                                              expression: "start_time_form",
+                                            },
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _vm.start_time_form
+                                              ? _c("v-time-picker", {
+                                                  attrs: { "full-width": "" },
+                                                  on: {
+                                                    change: function ($event) {
+                                                      return _vm.integrationDate(
+                                                        "start"
+                                                      )
+                                                    },
+                                                    "click:minute": function (
+                                                      $event
+                                                    ) {
+                                                      return _vm.$refs.start_time_form.save(
+                                                        _vm.start_form
+                                                          .start_time
+                                                      )
+                                                    },
+                                                  },
+                                                  model: {
+                                                    value:
+                                                      _vm.start_form.start_time,
+                                                    callback: function ($$v) {
+                                                      _vm.$set(
+                                                        _vm.start_form,
+                                                        "start_time",
+                                                        $$v
+                                                      )
+                                                    },
+                                                    expression:
+                                                      "start_form.start_time",
+                                                  },
+                                                })
+                                              : _vm._e(),
                                           ],
                                           1
                                         ),
@@ -31436,35 +31641,21 @@ var render = function () {
                                                           {
                                                             attrs: {
                                                               readonly: "",
-                                                              "error-messages":
-                                                                _vm.endErrors,
-                                                            },
-                                                            on: {
-                                                              input: function (
-                                                                $event
-                                                              ) {
-                                                                return _vm.$v.createEvent.end.$touch()
-                                                              },
-                                                              blur: function (
-                                                                $event
-                                                              ) {
-                                                                return _vm.$v.createEvent.end.$touch()
-                                                              },
                                                             },
                                                             model: {
                                                               value:
-                                                                _vm.createEvent
-                                                                  .end,
+                                                                _vm.end_form
+                                                                  .end_date,
                                                               callback:
                                                                 function ($$v) {
                                                                   _vm.$set(
-                                                                    _vm.createEvent,
-                                                                    "end",
+                                                                    _vm.end_form,
+                                                                    "end_date",
                                                                     $$v
                                                                   )
                                                                 },
                                                               expression:
-                                                                "createEvent.end",
+                                                                "end_form.end_date",
                                                             },
                                                           },
                                                           "v-text-field",
@@ -31491,22 +31682,155 @@ var render = function () {
                                             _c("v-date-picker", {
                                               attrs: { locale: "ja-jp" },
                                               on: {
+                                                change: function ($event) {
+                                                  return _vm.integrationDate(
+                                                    "end"
+                                                  )
+                                                },
                                                 input: function ($event) {
                                                   _vm.end_date_form = false
                                                 },
                                               },
                                               model: {
-                                                value: _vm.createEvent.end,
+                                                value: _vm.end_form.end_date,
                                                 callback: function ($$v) {
                                                   _vm.$set(
-                                                    _vm.createEvent,
-                                                    "end",
+                                                    _vm.end_form,
+                                                    "end_date",
                                                     $$v
                                                   )
                                                 },
-                                                expression: "createEvent.end",
+                                                expression: "end_form.end_date",
                                               },
                                             }),
+                                          ],
+                                          1
+                                        ),
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      [
+                                        _c(
+                                          "v-menu",
+                                          {
+                                            ref: "end_time_form",
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "nudge-right": 40,
+                                              "return-value":
+                                                _vm.end_form.end_time,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "max-width": "290px",
+                                              "min-width": "290px",
+                                            },
+                                            on: {
+                                              "update:returnValue": function (
+                                                $event
+                                              ) {
+                                                return _vm.$set(
+                                                  _vm.end_form,
+                                                  "end_time",
+                                                  $event
+                                                )
+                                              },
+                                              "update:return-value": function (
+                                                $event
+                                              ) {
+                                                return _vm.$set(
+                                                  _vm.end_form,
+                                                  "end_time",
+                                                  $event
+                                                )
+                                              },
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function (ref) {
+                                                  var on = ref.on
+                                                  var attrs = ref.attrs
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        _vm._b(
+                                                          {
+                                                            attrs: {
+                                                              readonly: "",
+                                                            },
+                                                            model: {
+                                                              value:
+                                                                _vm.end_form
+                                                                  .end_time,
+                                                              callback:
+                                                                function ($$v) {
+                                                                  _vm.$set(
+                                                                    _vm.end_form,
+                                                                    "end_time",
+                                                                    $$v
+                                                                  )
+                                                                },
+                                                              expression:
+                                                                "end_form.end_time",
+                                                            },
+                                                          },
+                                                          "v-text-field",
+                                                          attrs,
+                                                          false
+                                                        ),
+                                                        on
+                                                      )
+                                                    ),
+                                                  ]
+                                                },
+                                              },
+                                            ]),
+                                            model: {
+                                              value: _vm.end_time_form,
+                                              callback: function ($$v) {
+                                                _vm.end_time_form = $$v
+                                              },
+                                              expression: "end_time_form",
+                                            },
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _vm.end_time_form
+                                              ? _c("v-time-picker", {
+                                                  attrs: { "full-width": "" },
+                                                  on: {
+                                                    change: function ($event) {
+                                                      return _vm.integrationDate(
+                                                        "end"
+                                                      )
+                                                    },
+                                                    "click:minute": function (
+                                                      $event
+                                                    ) {
+                                                      return _vm.$refs.end_time_form.save(
+                                                        _vm.end_form.end_time
+                                                      )
+                                                    },
+                                                  },
+                                                  model: {
+                                                    value:
+                                                      _vm.end_form.end_time,
+                                                    callback: function ($$v) {
+                                                      _vm.$set(
+                                                        _vm.end_form,
+                                                        "end_time",
+                                                        $$v
+                                                      )
+                                                    },
+                                                    expression:
+                                                      "end_form.end_time",
+                                                  },
+                                                })
+                                              : _vm._e(),
                                           ],
                                           1
                                         ),
