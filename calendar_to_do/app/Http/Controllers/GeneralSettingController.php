@@ -7,12 +7,7 @@ use Illuminate\Http\Request;
 
 class GeneralSettingController extends Controller
 {
-    public function index(){
-        if(GeneralSetting::count() !== 0){
-            $general_setting = GeneralSetting::first();
-        }else{
-            $general_setting = new GeneralSetting;
-        }
+    public function index(GeneralSetting $general_setting){
         return $general_setting;
     }
 
@@ -22,19 +17,9 @@ class GeneralSettingController extends Controller
         return response()->json('ToDo created!');
     }
 
-    public function show($id)
-    {
-        $todo = ToDo::find($id);
-        return response()->json($todo);
-    }
 
-
-    public function update(Request $request){
-        if(GeneralSetting::count() !== 0){
-            $general_setting = GeneralSetting::first();
-        }else{
-            $general_setting = new GeneralSetting;
-        }
+    public function update(GeneralSetting $general_setting,Request $request){
+    
         $general_setting->calendar_json = [
             'type' => $request->type,
             'mode' => $request->mode,
@@ -45,11 +30,4 @@ class GeneralSettingController extends Controller
         return response()->json($general_setting);
     }
 
-    public function destroy($id)
-    {
-        $todo = ToDo::find($id);
-        $todo->delete();
-
-        return response()->json('ToDo deleted!');
-    }
 }

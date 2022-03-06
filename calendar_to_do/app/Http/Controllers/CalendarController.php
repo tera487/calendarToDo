@@ -13,8 +13,7 @@ class CalendarController extends Controller
         return array_reverse($calendar_items);
     }
 
-    public function store(Request $request){
-        $calendar=new Calendar;
+    public function store(Calendar $calendar, Request $request){
         $calendar->fill($request->only(['name', 'start','end']));
         $calendar->user_id = Auth::id();
         $calendar->save();
