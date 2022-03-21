@@ -26,7 +26,7 @@ import IndexCalendar from '../components/calendar/IndexCalendar.vue';
 
 
 // generalSetting
-import IndexGeneralSetting from '../components/generalSetting/IndexGeneralSetting.vue';
+import showGeneralSetting from '../components/generalSetting/showGeneralSetting.vue';
 
 // account
 import IndexUser from '../components/user/IndexUser.vue';
@@ -103,10 +103,10 @@ const Routes = [
 
         //generalSetting
         {
-            name: 'indexGeneralSetting',
-            path: '/generalSetting',
+            name: 'showGeneralSetting',
+            path: `/generalSetting/:id`,
             meta:{middleware:"auth"},
-            component: IndexGeneralSetting,
+            component: showGeneralSetting,
         },
 
     ]

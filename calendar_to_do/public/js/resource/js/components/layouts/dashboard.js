@@ -81,6 +81,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "dashboard-layout",
@@ -88,7 +90,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       cards: ['Today', 'Yesterday'],
       drawer: null,
-      links: [['indexCalendar', 'event', 'calendar'], ['indexToDo', 'task', 'Todo'], ['indexUser', 'account_circle', 'account'], ['indexGeneralSetting', 'settings', 'setting']],
+      links: [['indexCalendar', 'event', 'calendar'], ['indexToDo', 'task', 'Todo'], ['indexUser', 'account_circle', 'account'], ['showGeneralSetting', 'settings', 'setting']],
       user: this.$store.state.auth.user,
       picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10)
     };
@@ -316,37 +318,47 @@ var render = function () {
               _vm._v(" "),
               _c(
                 "v-list",
-                _vm._l(_vm.links, function (ref) {
-                  var path = ref[0]
-                  var icon = ref[1]
-                  var text = ref[2]
-                  return _c(
-                    "router-link",
-                    { key: icon, attrs: { to: { name: path } } },
-                    [
-                      _c(
-                        "v-list-item",
-                        { attrs: { link: "" } },
-                        [
-                          _c(
-                            "v-list-item-icon",
-                            [_c("v-icon", [_vm._v(_vm._s(icon))])],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-list-item-content",
-                            [_c("v-list-item-title", [_vm._v(_vm._s(text))])],
-                            1
-                          ),
-                        ],
-                        1
-                      ),
-                    ],
-                    1
-                  )
-                }),
-                1
+                [
+                  _vm._v(
+                    "\n                " + _vm._s(_vm.user) + "\n            "
+                  ),
+                  _vm._l(_vm.links, function (ref) {
+                    var path = ref[0]
+                    var icon = ref[1]
+                    var text = ref[2]
+                    return _c(
+                      "router-link",
+                      {
+                        key: icon,
+                        attrs: {
+                          to: { name: path, params: { id: _vm.user.id } },
+                        },
+                      },
+                      [
+                        _c(
+                          "v-list-item",
+                          { attrs: { link: "" } },
+                          [
+                            _c(
+                              "v-list-item-icon",
+                              [_c("v-icon", [_vm._v(_vm._s(icon))])],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-list-item-content",
+                              [_c("v-list-item-title", [_vm._v(_vm._s(text))])],
+                              1
+                            ),
+                          ],
+                          1
+                        ),
+                      ],
+                      1
+                    )
+                  }),
+                ],
+                2
               ),
               _vm._v(" "),
               _c(

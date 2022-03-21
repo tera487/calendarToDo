@@ -20,12 +20,7 @@ class CalendarController extends Controller
         return response()->json($calendar->id);
     }
 
-    public function show($id)
-    {
-        $todo = ToDo::find($id);
-        return response()->json($todo);
-    }
-
+    
 
     public function update($id, Request $request){
         $calendar=Calendar::find($id);

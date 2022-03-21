@@ -13,6 +13,13 @@ class GeneralSetting extends Model
         "calendar_json" => "{}",
     ];
 
+    protected $fillable= ['user_id'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
 
     protected $casts =[
         'calendar_json' => 'json'

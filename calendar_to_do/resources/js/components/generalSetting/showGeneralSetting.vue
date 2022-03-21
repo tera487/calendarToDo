@@ -66,7 +66,7 @@ export default{
   },
   mounted(){
     axios
-      .get('/api/generalSetting')
+      .get(`/api/generalSetting/${this.$store.state.auth.user.id}`)
       .then(response => {
         this.calendar_json = response.data.calendar_json;
        });

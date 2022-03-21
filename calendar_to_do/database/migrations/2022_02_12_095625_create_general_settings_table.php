@@ -15,6 +15,7 @@ class CreateGeneralSettingsTable extends Migration
     {
         Schema::create('general_settings', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_id');
             $table->json('calendar_json')->nullable();
             $table->timestamps();
         });

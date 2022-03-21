@@ -16,14 +16,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Calendar::class, function ($app) {
             return new Calendar();
         });
-
-        $this->app->bind(GeneralSetting::class, function ($app) {
-            if(GeneralSetting::count() !== 0){
-                return GeneralSetting::first();
-            }else{
-                return new GeneralSetting;
-            }
-        });
         
     }
 

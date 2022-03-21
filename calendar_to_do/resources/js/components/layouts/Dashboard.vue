@@ -21,7 +21,7 @@
             <v-divider></v-divider>
 
             <v-list>
-                <router-link :to="{name: path}" v-for="[path, icon, text] in links"
+                <router-link :to="{name: path,params:{id:user.id}}" v-for="[path, icon, text] in links"
                     :key="icon">
                     <v-list-item
                     
@@ -66,7 +66,7 @@ export default {
             ['indexCalendar','event', 'calendar'],
             ['indexToDo','task', 'Todo'],
             ['indexUser','account_circle', 'account'],
-            ['indexGeneralSetting','settings', 'setting'],
+            ['showGeneralSetting','settings', 'setting'],
         ],
         user:this.$store.state.auth.user,
         picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
