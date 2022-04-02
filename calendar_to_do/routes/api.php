@@ -15,10 +15,10 @@ use App\Http\Controllers\UserController;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('products', ProductController::class);
-    Route::resource('todo', ToDoController::class);
-    Route::resource('generalSetting', GeneralSettingController::class);
-    Route::resource('calendar', CalendarController::class);
+    // Route::resource('products', ProductController::class);
+    Route::resource('todo', ToDoController::class)->except('create','edit');
+    Route::resource('generalSetting', GeneralSettingController::class)->only('show','update');
+    Route::resource('calendar', CalendarController::class)->except('create','edit');
     Route::resource('user', UserController::class);
 });
 
