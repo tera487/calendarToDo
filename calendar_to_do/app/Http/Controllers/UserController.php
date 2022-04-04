@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index($id)
+    public function update(Request $request)
     {
-        // authでその情報を表示させる
-        $todo = ToDo::find($id);
-        return response()->json($todo);
+        $user = User::find($request->user()->id);
+        $user->fill($request->only(['name', 'email']));
+        $user->save();
+        return;
     }
 }

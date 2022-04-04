@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('todo', ToDoController::class)->except('create','edit');
     Route::resource('generalSetting', GeneralSettingController::class)->only('show','update');
     Route::resource('calendar', CalendarController::class)->except('create','edit');
-    Route::resource('user', UserController::class);
+    Route::resource('users', UserController::class)->only('update');
 });
 
 
