@@ -57,12 +57,15 @@ export default {
             user: this.$store.state.auth.user,
         };
     },
+    // エラーメッセージの作成
     computed: {},
     methods: {
         updateUser() {
             axios
                 .patch(`/api/users/${this.user.id}`, this.user)
-                .then((res) => {})
+                .then(() => {
+                    this.$emit('colseDialog');
+                })
                 .catch((err) => console.log(err))
                 .finally(() => (this.loading = false));
         },

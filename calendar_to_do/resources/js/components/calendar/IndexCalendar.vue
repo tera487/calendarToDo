@@ -296,31 +296,14 @@
                     </v-dialog>
 
                     <!-- 削除確認ダイアログ-->
-                    <v-dialog v-model="deleteDialog" persistent max-width="290">
-                        <v-card>
-                            <v-card-title class="headline">{{
-                                selectedEvent.name
-                            }}</v-card-title>
-                            <v-card-text
-                                >削除してもよろしいですか？</v-card-text
-                            >
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    color="green darken-1"
-                                    text
-                                    @click="deleteDialog = false"
-                                    >キャンセル</v-btn
-                                >
-                                <v-btn
-                                    color="green darken-1"
-                                    text
-                                    @click="deleteEvent(selectedEvent.id)"
-                                    >削除</v-btn
-                                >
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
+                    <delete-calendar-dialog
+                        :selectedEventId="selectedEvent ? selectedEvent.id : ''"
+                        :selectedEventName="
+                            selectedEvent ? selectedEvent.name : ''
+                        "
+                        v-if="deleteDialog"
+                        @colseDialog="colseDeleteDialog"
+                    ></delete-calendar-dialog>
                 </div>
             </v-sheet>
         </div>
@@ -329,8 +312,12 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators';
+import DeleteCalendarDialog from './DeleteCalendarDialog.vue';
 
 export default {
+    components: {
+        DeleteCalendarDialog,
+    },
     validations: {
         createEvent: {
             name: { required },
@@ -410,6 +397,13 @@ export default {
         deleteDialog: false,
     }),
     methods: {
+        colseDeleteDialog(id) {
+            if (id !== undefined) {
+                this.events = this.events.filter((v) => v.id !== id);
+                this.selectedOpen = false;
+            }
+            this.deleteDialog = false;
+        },
         integrationDate(status) {
             if (status == 'start') {
                 this.createEvent.start = `${this.start_form.start_date} ${this.start_form.start_time}`;
@@ -683,18 +677,6 @@ export default {
         },
         rnd(a, b) {
             return Math.floor((b - a + 1) * Math.random()) + a;
-        },
-
-        deleteEvent(id) {
-            axios
-                .delete(`/api/calendar/${id}`)
-                .then(() => {
-                    this.events = this.events.filter((v) => v.id !== id);
-                    this.selectedOpen = false;
-                    this.deleteDialog = false;
-                })
-                .catch((err) => console.log(err))
-                .finally(() => (this.loading = false));
         },
     },
     mounted() {
