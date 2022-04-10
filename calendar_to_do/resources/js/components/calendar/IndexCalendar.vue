@@ -1,313 +1,334 @@
 <template>
-    <v-app>
-        <div>
-            <v-row align="center">
-                <v-col>
-                    <v-list-item-icon>
-                        <v-icon>event</v-icon>
-                        <h3 class="m-0">Calendar</h3>
-                    </v-list-item-icon>
-                </v-col>
-                <v-col class="text-right d-flex">
-                    <v-select
-                        v-model="calendar_json.type"
-                        :items="types"
-                        dense
-                        outlined
-                        hide-details
-                        class="ma-2"
-                        label="type"
-                    ></v-select>
-                    <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
-                        <v-icon>mdi-chevron-left</v-icon>
-                    </v-btn>
+  <v-app>
+    <div>
+      <v-row align="center">
+        <v-col>
+          <v-list-item-icon>
+            <v-icon>event</v-icon>
+            <h3 class="m-0">
+              Calendar
+            </h3>
+          </v-list-item-icon>
+        </v-col>
+        <v-col class="text-right d-flex">
+          <v-select
+            v-model="calendar_json.type"
+            :items="types"
+            dense
+            outlined
+            hide-details
+            class="ma-2"
+            label="type"
+          />
+          <v-btn
+            icon
+            class="ma-2"
+            @click="$refs.calendar.prev()"
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
 
-                    <v-btn icon class="ma-2" @click="$refs.calendar.next()">
-                        <v-icon>mdi-chevron-right</v-icon>
-                    </v-btn>
-                </v-col>
-            </v-row>
+          <v-btn
+            icon
+            class="ma-2"
+            @click="$refs.calendar.next()"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
 
-            <v-sheet height="600">
-                <v-calendar
-                    ref="calendar"
-                    v-model="value"
-                    :weekdays="calendar_json.weekday"
-                    :type="calendar_json.type"
-                    :events="events"
-                    :event-overlap-mode="calendar_json.mode"
-                    :event-overlap-threshold="30"
-                    :event-color="getEventColor"
-                    @click:date="viewDay"
-                    locale="ja-jp"
-                    :event-ripple="false"
-                    @mousedown:event="startDrag"
-                    @mousedown:time="startTime"
-                    @mousemove:time="mouseMove"
-                    @mouseup:time="endDrag"
-                    @mouseleave.native="cancelDrag"
-                    @click:event="showEvent"
-                ></v-calendar>
-                <v-menu
-                    v-model="selectedOpen"
-                    :close-on-content-click="false"
-                    :activator="selectedElement"
-                    offset-x
-                >
-                    <v-card color="grey lighten-4" min-width="350px" flat>
-                        <v-toolbar :color="selectedEvent.color" dark>
-                            <v-toolbar-title
-                                v-html="selectedEvent.name"
-                            ></v-toolbar-title>
-                            <v-spacer></v-spacer>
-                            <v-btn icon>
-                                <v-icon @click="editEvent">mdi-pencil</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                                <v-icon @click="deleteConfirm()">delete</v-icon>
-                            </v-btn>
-                            <v-btn icon>
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </v-toolbar>
-                        <v-card-text>
-                            <span
-                                v-html="dateFormat(selectedEvent.start)"
-                            ></span>
-                            〜
-                            <span v-html="dateFormat(selectedEvent.end)"></span>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-btn
-                                text
-                                color="secondary"
-                                @click="selectedOpen = false"
-                            >
-                                Cancel
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-menu>
+      <v-sheet height="600">
+        <v-calendar
+          ref="calendar"
+          v-model="value"
+          :weekdays="calendar_json.weekday"
+          :type="calendar_json.type"
+          :events="events"
+          :event-overlap-mode="calendar_json.mode"
+          :event-overlap-threshold="30"
+          :event-color="getEventColor"
+          locale="ja-jp"
+          :event-ripple="false"
+          @click:date="viewDay"
+          @mousedown:event="startDrag"
+          @mousedown:time="startTime"
+          @mousemove:time="mouseMove"
+          @mouseup:time="endDrag"
+          @mouseleave.native="cancelDrag"
+          @click:event="showEvent"
+        />
+        <v-menu
+          v-model="selectedOpen"
+          :close-on-content-click="false"
+          :activator="selectedElement"
+          offset-x
+        >
+          <v-card
+            color="grey lighten-4"
+            min-width="350px"
+            flat
+          >
+            <v-toolbar
+              :color="selectedEvent.color"
+              dark
+            >
+              <v-toolbar-title
+                v-html="selectedEvent.name"
+              />
+              <v-spacer />
+              <v-btn icon>
+                <v-icon @click="editEvent">
+                  mdi-pencil
+                </v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon @click="deleteConfirm()">
+                  delete
+                </v-icon>
+              </v-btn>
+              <v-btn icon>
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </v-toolbar>
+            <v-card-text>
+              <span
+                v-html="dateFormat(selectedEvent.start)"
+              />
+              〜
+              <span v-html="dateFormat(selectedEvent.end)" />
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                text
+                color="secondary"
+                @click="selectedOpen = false"
+              >
+                Cancel
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
 
-                <!-- スケジュール追加・編集のダイアログ -->
-                <div class="text-center">
-                    <v-dialog
-                        v-model="dialog"
-                        width="500"
-                        @click:outside="resetCreateEvent"
-                    >
-                        <v-card>
-                            <v-card-title class="text-h5 grey lighten-2">
-                                スケージュール
-                            </v-card-title>
+        <!-- スケジュール追加・編集のダイアログ -->
+        <div class="text-center">
+          <v-dialog
+            v-model="dialog"
+            width="500"
+            @click:outside="resetCreateEvent"
+          >
+            <v-card>
+              <v-card-title class="text-h5 grey lighten-2">
+                スケージュール
+              </v-card-title>
 
-                            <v-card-text>
-                                <v-container>
-                                    <v-text-field
-                                        label="タイトル"
-                                        v-model="createEvent.name"
-                                        :error-messages="nameErrors"
-                                        @input="$v.createEvent.name.$touch()"
-                                        @blur="$v.createEvent.name.$touch()"
-                                    ></v-text-field>
-                                    <v-row>
-                                        <v-col>
-                                            <v-menu
-                                                v-model="start_date_form"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="auto"
-                                            >
-                                                <template
-                                                    v-slot:activator="{
-                                                        on,
-                                                        attrs,
-                                                    }"
-                                                >
-                                                    <v-text-field
-                                                        v-model="
-                                                            start_form.start_date
-                                                        "
-                                                        label="タイムゾーン"
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                    ></v-text-field>
-                                                </template>
-                                                <v-date-picker
-                                                    locale="ja-jp"
-                                                    v-model="
-                                                        start_form.start_date
-                                                    "
-                                                    @change="
-                                                        integrationDate('start')
-                                                    "
-                                                    @input="
-                                                        start_date_form = false
-                                                    "
-                                                ></v-date-picker>
-                                            </v-menu>
-                                        </v-col>
-                                        <v-col>
-                                            <v-menu
-                                                ref="start_time_form"
-                                                v-model="start_time_form"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                :return-value.sync="
-                                                    start_form.start_time
-                                                "
-                                                transition="scale-transition"
-                                                offset-y
-                                                max-width="290px"
-                                                min-width="290px"
-                                            >
-                                                <template
-                                                    v-slot:activator="{
-                                                        on,
-                                                        attrs,
-                                                    }"
-                                                >
-                                                    <v-text-field
-                                                        v-model="
-                                                            start_form.start_time
-                                                        "
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                    ></v-text-field>
-                                                </template>
-                                                <v-time-picker
-                                                    v-if="start_time_form"
-                                                    v-model="
-                                                        start_form.start_time
-                                                    "
-                                                    full-width
-                                                    @change="
-                                                        integrationDate('start')
-                                                    "
-                                                    @click:minute="
-                                                        $refs.start_time_form.save(
-                                                            start_form.start_time
-                                                        )
-                                                    "
-                                                ></v-time-picker>
-                                            </v-menu>
-                                        </v-col>
-                                        <v-col>
-                                            <v-menu
-                                                v-model="end_date_form"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                transition="scale-transition"
-                                                offset-y
-                                                min-width="auto"
-                                            >
-                                                <template
-                                                    v-slot:activator="{
-                                                        on,
-                                                        attrs,
-                                                    }"
-                                                >
-                                                    <v-text-field
-                                                        v-model="
-                                                            end_form.end_date
-                                                        "
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                    ></v-text-field>
-                                                </template>
-                                                <v-date-picker
-                                                    locale="ja-jp"
-                                                    v-model="end_form.end_date"
-                                                    @change="
-                                                        integrationDate('end')
-                                                    "
-                                                    @input="
-                                                        end_date_form = false
-                                                    "
-                                                ></v-date-picker>
-                                            </v-menu>
-                                        </v-col>
-                                        <v-col>
-                                            <v-menu
-                                                ref="end_time_form"
-                                                v-model="end_time_form"
-                                                :close-on-content-click="false"
-                                                :nudge-right="40"
-                                                :return-value.sync="
-                                                    end_form.end_time
-                                                "
-                                                transition="scale-transition"
-                                                offset-y
-                                                max-width="290px"
-                                                min-width="290px"
-                                            >
-                                                <template
-                                                    v-slot:activator="{
-                                                        on,
-                                                        attrs,
-                                                    }"
-                                                >
-                                                    <v-text-field
-                                                        v-model="
-                                                            end_form.end_time
-                                                        "
-                                                        readonly
-                                                        v-bind="attrs"
-                                                        v-on="on"
-                                                    ></v-text-field>
-                                                </template>
-                                                <v-time-picker
-                                                    v-if="end_time_form"
-                                                    v-model="end_form.end_time"
-                                                    full-width
-                                                    @change="
-                                                        integrationDate('end')
-                                                    "
-                                                    @click:minute="
-                                                        $refs.end_time_form.save(
-                                                            end_form.end_time
-                                                        )
-                                                    "
-                                                ></v-time-picker>
-                                            </v-menu>
-                                        </v-col>
-                                    </v-row>
-                                </v-container>
-                            </v-card-text>
-
-                            <v-divider></v-divider>
-
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    color="primary"
-                                    text
-                                    @click="validationEventform"
-                                >
-                                    保存
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-
-                    <!-- 削除確認ダイアログ-->
-                    <delete-calendar-dialog
-                        :selectedEventId="selectedEvent ? selectedEvent.id : ''"
-                        :selectedEventName="
-                            selectedEvent ? selectedEvent.name : ''
+              <v-card-text>
+                <v-container>
+                  <v-text-field
+                    v-model="createEvent.name"
+                    label="タイトル"
+                    :error-messages="nameErrors"
+                    @input="$v.createEvent.name.$touch()"
+                    @blur="$v.createEvent.name.$touch()"
+                  />
+                  <v-row>
+                    <v-col>
+                      <v-menu
+                        v-model="start_date_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template
+                          #activator="{
+                            on,
+                            attrs,
+                          }"
+                        >
+                          <v-text-field
+                            v-model="
+                              start_form.start_date
+                            "
+                            label="タイムゾーン"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-date-picker
+                          v-model="
+                            start_form.start_date
+                          "
+                          locale="ja-jp"
+                          @change="
+                            integrationDate('start')
+                          "
+                          @input="
+                            start_date_form = false
+                          "
+                        />
+                      </v-menu>
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        ref="start_time_form"
+                        v-model="start_time_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="
+                          start_form.start_time
                         "
-                        v-if="deleteDialog"
-                        @colseDialog="colseDeleteDialog"
-                    ></delete-calendar-dialog>
-                </div>
-            </v-sheet>
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template
+                          #activator="{
+                            on,
+                            attrs,
+                          }"
+                        >
+                          <v-text-field
+                            v-model="
+                              start_form.start_time
+                            "
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-time-picker
+                          v-if="start_time_form"
+                          v-model="
+                            start_form.start_time
+                          "
+                          full-width
+                          @change="
+                            integrationDate('start')
+                          "
+                          @click:minute="
+                            $refs.start_time_form.save(
+                              start_form.start_time
+                            )
+                          "
+                        />
+                      </v-menu>
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        v-model="end_date_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template
+                          #activator="{
+                            on,
+                            attrs,
+                          }"
+                        >
+                          <v-text-field
+                            v-model="
+                              end_form.end_date
+                            "
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-date-picker
+                          v-model="end_form.end_date"
+                          locale="ja-jp"
+                          @change="
+                            integrationDate('end')
+                          "
+                          @input="
+                            end_date_form = false
+                          "
+                        />
+                      </v-menu>
+                    </v-col>
+                    <v-col>
+                      <v-menu
+                        ref="end_time_form"
+                        v-model="end_time_form"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="
+                          end_form.end_time
+                        "
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template
+                          #activator="{
+                            on,
+                            attrs,
+                          }"
+                        >
+                          <v-text-field
+                            v-model="
+                              end_form.end_time
+                            "
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                          />
+                        </template>
+                        <v-time-picker
+                          v-if="end_time_form"
+                          v-model="end_form.end_time"
+                          full-width
+                          @change="
+                            integrationDate('end')
+                          "
+                          @click:minute="
+                            $refs.end_time_form.save(
+                              end_form.end_time
+                            )
+                          "
+                        />
+                      </v-menu>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-divider />
+
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  color="primary"
+                  text
+                  @click="validationEventform"
+                >
+                  保存
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- 削除確認ダイアログ-->
+          <delete-calendar-dialog
+            v-if="deleteDialog"
+            :selected-event-id="selectedEvent ? selectedEvent.id : ''"
+            :selected-event-name="
+              selectedEvent ? selectedEvent.name : ''
+            "
+            @colseDialog="colseDeleteDialog"
+          />
         </div>
-    </v-app>
+      </v-sheet>
+    </div>
+  </v-app>
 </template>
 
 <script>
@@ -396,6 +417,48 @@ export default {
 
         deleteDialog: false,
     }),
+    computed: {
+        nameErrors() {
+            const errors = [];
+            if (!this.$v.createEvent.name.$dirty) return errors;
+            !this.$v.createEvent.name.required &&
+                errors.push('タイトルは必須です。');
+            return errors;
+        },
+        startErrors() {
+            const errors = [];
+            if (!this.$v.createEvent.start.$dirty) return errors;
+            !this.$v.createEvent.start.required &&
+                errors.push('タイムゾーンは必須です。');
+            return errors;
+        },
+        endErrors() {
+            const errors = [];
+            if (!this.$v.createEvent.end.$dirty) return errors;
+            !this.$v.createEvent.end.reuired &&
+                errors.push('タイムゾーンは必須です。');
+            return errors;
+        },
+    },
+    mounted() {
+        axios
+            .get(`/api/generalSetting/${this.$store.state.auth.user.id}`)
+            .then((response) => {
+                this.calendar_json = response.data.calendar_json;
+            });
+
+        axios.get('/api/calendar').then((response) => {
+            const data = response.data;
+            for (let i = 0; i < response.data.length; i++) {
+                response.data[i].start = new Date(response.data[i].start);
+                response.data[i].end = new Date(response.data[i].end);
+                response.data[i].timed = true;
+                response.data[i].color = this.rndElement(this.colors);
+                response.data[i].id = response.data[i].id;
+            }
+            this.events = response.data;
+        });
+    },
     methods: {
         colseDeleteDialog(id) {
             if (id !== undefined) {
@@ -677,48 +740,6 @@ export default {
         },
         rnd(a, b) {
             return Math.floor((b - a + 1) * Math.random()) + a;
-        },
-    },
-    mounted() {
-        axios
-            .get(`/api/generalSetting/${this.$store.state.auth.user.id}`)
-            .then((response) => {
-                this.calendar_json = response.data.calendar_json;
-            });
-
-        axios.get('/api/calendar').then((response) => {
-            const data = response.data;
-            for (let i = 0; i < response.data.length; i++) {
-                response.data[i].start = new Date(response.data[i].start);
-                response.data[i].end = new Date(response.data[i].end);
-                response.data[i].timed = true;
-                response.data[i].color = this.rndElement(this.colors);
-                response.data[i].id = response.data[i].id;
-            }
-            this.events = response.data;
-        });
-    },
-    computed: {
-        nameErrors() {
-            const errors = [];
-            if (!this.$v.createEvent.name.$dirty) return errors;
-            !this.$v.createEvent.name.required &&
-                errors.push('タイトルは必須です。');
-            return errors;
-        },
-        startErrors() {
-            const errors = [];
-            if (!this.$v.createEvent.start.$dirty) return errors;
-            !this.$v.createEvent.start.required &&
-                errors.push('タイムゾーンは必須です。');
-            return errors;
-        },
-        endErrors() {
-            const errors = [];
-            if (!this.$v.createEvent.end.$dirty) return errors;
-            !this.$v.createEvent.end.reuired &&
-                errors.push('タイムゾーンは必須です。');
-            return errors;
         },
     },
 };

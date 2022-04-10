@@ -1,23 +1,26 @@
 <template>
   <v-app>
-    <form action="" @submit.prevent="addToDo()">
-        <v-text-field
-          v-model="todo.title"
-          :error-messages="titleErrors"
-          :counter="10"
-          label="タイトル"
-          @input="$v.todo.title.$touch()"
-          @blur="$v.todo.title.$touch()"
-        ></v-text-field>
+    <form
+      action=""
+      @submit.prevent="addToDo()"
+    >
+      <v-text-field
+        v-model="todo.title"
+        :error-messages="titleErrors"
+        :counter="10"
+        label="タイトル"
+        @input="$v.todo.title.$touch()"
+        @blur="$v.todo.title.$touch()"
+      />
         
-       <v-textarea
+      <v-textarea
+        v-model="todo.content"
         name="input-7-1"
         label="内容"
-        v-model="todo.content"
         :error-messages="contentErrors"
         @input="$v.todo.content.$touch()"
         @blur="$v.todo.content.$touch()"
-      ></v-textarea>
+      />
 
       <v-menu
         v-model="start_date_form"
@@ -27,7 +30,7 @@
         offset-y
         min-width="auto"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-text-field
             v-model="todo.start_date"
             label="開始日"
@@ -35,13 +38,13 @@
             readonly
             v-bind="attrs"
             v-on="on"
-          ></v-text-field>
+          />
         </template>
         <v-date-picker
           v-model="todo.start_date"
           locale="ja-jp"
           @input="start_date_form = false"
-        ></v-date-picker>
+        />
       </v-menu>
       <v-menu
         v-model="end_date_form"
@@ -51,34 +54,33 @@
         offset-y
         min-width="auto"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-text-field
             v-model="todo.end_date"
             label="期限"
 
             readonly
             v-bind="attrs"
-            v-on="on"
             :error-messages="endDateErrors"
+            v-on="on"
             @input="$v.todo.end_date.$touch()"
             @blur="$v.todo.end_date.$touch()"
-          ></v-text-field>
+          />
         </template>
         <v-date-picker
           v-model="todo.end_date"
           locale="ja-jp"
           @input="end_date_form = false"
-        ></v-date-picker>
+        />
       </v-menu>
 
       <v-btn
-      class="mr-4"
-      type="submit"
+        class="mr-4"
+        type="submit"
       >
         新規作成
       </v-btn>
     </form>
-
   </v-app>
 </template>
 
@@ -113,30 +115,6 @@ export default{
           },
       }
   },
-  methods:{
-    addToDo(){
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        if(this.$route.params.id){
-          axios
-          .post(`/api/todo/${this.$route.params.id}`, this.todo)
-              .then((res) => {
-                  this.$router.push({ name: 'indexToDo' });
-              });
-        }else{
-          axios.post('/api/todo', this.todo)
-          .then(response => (
-            this.$router.push({ name: 'indexToDo' })
-          ))
-          .catch(err => console.log(err))
-          .finally(() => this.loading = false)
-        }  
-      }
-    },
-    // submit () {
-    //   this.$v.$touch()
-    // },
-  },
   computed: {
     titleErrors () {
       const errors = []
@@ -166,6 +144,30 @@ export default{
               this.todo = res.data;
           });
     }
+  },
+  methods:{
+    addToDo(){
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        if(this.$route.params.id){
+          axios
+          .post(`/api/todo/${this.$route.params.id}`, this.todo)
+              .then((res) => {
+                  this.$router.push({ name: 'indexToDo' });
+              });
+        }else{
+          axios.post('/api/todo', this.todo)
+          .then(response => (
+            this.$router.push({ name: 'indexToDo' })
+          ))
+          .catch(err => console.log(err))
+          .finally(() => this.loading = false)
+        }  
+      }
+    },
+    // submit () {
+    //   this.$v.$touch()
+    // },
   },
 
 }
