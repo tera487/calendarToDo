@@ -152,7 +152,7 @@ export default{
         if(this.$route.params.id){
           axios
           .post(`/api/todo/${this.$route.params.id}`, this.todo)
-              .then((res) => {
+              .then(() => {
                   this.$router.push({ name: 'indexToDo' });
               });
         }else{

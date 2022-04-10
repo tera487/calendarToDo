@@ -17,6 +17,10 @@ const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* web
 const Dashboard = () => import('../components/auth/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
 /* Authenticated Component */
 
+// password reset
+import ResetPasswordForm from '../components/auth/ResetPasswordForm.vue';
+import SendComplete from '../components/auth/SendComplete.vue';
+
 // todo
 import IndexToDo from '../components/todos/IndexToDo.vue';
 import CreateToDo from '../components/todos/CreateToDo.vue';
@@ -54,6 +58,24 @@ const Routes = [
     name:"register",
     path:"/register",
     component:Register,
+    meta:{
+        middleware:"guest",
+        title:`Register`
+    }
+  },
+  {
+    name:"passwordReset",
+    path:"/passwordReset/email",
+    component:ResetPasswordForm,
+    meta:{
+        middleware:"guest",
+        title:`Register`
+    }
+  },
+  {
+    name:"sendComplete",
+    path:"/passwordReset/send",
+    component:SendComplete,
     meta:{
         middleware:"guest",
         title:`Register`

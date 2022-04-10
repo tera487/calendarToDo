@@ -73,7 +73,7 @@
       deleteProduct(id) { 
           axios
               .delete(`api/todo/${id}`)
-              .then(response => {
+              .then(() => {
                   let i = this.todos.map(data => data.id).indexOf(id);
                   this.todos.splice(i, 1)
               })
