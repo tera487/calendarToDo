@@ -1,10 +1,18 @@
 <template>
     <v-app class="my-10">
-        <v-card elevation="2" class="mb-5">
+        <v-card elevation="2" class="mb-5" style="max-width: 500px">
             <v-list-item three-line>
                 <v-list-item-content>
-                    <v-list-item-title class="text-h5 mb-1">
+                    <v-list-item-title
+                        class="text-h5 mb-1 d-flex justify-space-between"
+                    >
                         <p>アカウント情報</p>
+                        <v-btn
+                            elevation="2"
+                            @click="openEditDialog"
+                            style="max-width: 100px"
+                            >編集</v-btn
+                        >
                     </v-list-item-title>
                     <div class="mb-2">name: {{ user.name }}</div>
                     <div class="mb-2">email: {{ user.email }}</div>
@@ -14,23 +22,38 @@
                 </v-list-item-content>
             </v-list-item>
         </v-card>
-        <v-btn elevation="2" @click="logout" style="max-width: 200px"
+        <v-btn elevation="2" @click="logout" style="max-width: 150px"
             >ログアウト</v-btn
         >
+        <edit-user-dialog
+            v-if="openDialog"
+            @colseDialog="colseEditDialog"
+        ></edit-user-dialog>
     </v-app>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
 import moment from 'moment';
+import EditUserDialog from '../dialog/EditUserDialog.vue';
+
 export default {
-    name: 'dashboard-layout',
+    components: {
+        EditUserDialog,
+    },
     data() {
         return {
+            openDialog: false,
             user: this.$store.state.auth.user,
         };
     },
     methods: {
+        openEditDialog() {
+            this.openDialog = true;
+        },
+        colseEditDialog() {
+            this.openDialog = false;
+        },
         ...mapActions({
             signOut: 'auth/logout',
         }),

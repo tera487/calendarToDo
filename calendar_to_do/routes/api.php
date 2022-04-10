@@ -2,11 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ToDoController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +15,20 @@ use App\Http\Controllers\UserController;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Route::resource('products', ProductController::class);
-    Route::resource('todo', ToDoController::class)->except('create','edit');
-    Route::resource('generalSetting', GeneralSettingController::class)->only('show','update');
-    Route::resource('calendar', CalendarController::class)->except('create','edit');
-    Route::resource('user', UserController::class);
+    Route::resource('todo', ToDoController::class)->except('create', 'edit');
+    Route::resource('generalSetting', GeneralSettingController::class)->only('show', 'update');
+    Route::resource('calendar', CalendarController::class)->except('create', 'edit');
+    Route::resource('users', UserController::class)->only('update');
+});
+// パスワードリセット関連
+Route::prefix('passwordReset')->name('password_reset.')->group(function () {
+    Route::prefix('email')->name('email.')->group(function () {
+        Route::post('/', [PasswordController::class, 'sendEmailResetPassword'])->name('send');
+        Route::get('/send_complete', [PasswordController::class, 'sendComplete'])->name('send_complete');
+    });
+    Route::get('/edit', [PasswordController::class, 'edit'])->name('edit');
+    Route::post('/update', [PasswordController::class, 'update'])->name('update');
+    Route::get('/edited', [PasswordController::class, 'edited'])->name('edited');
 });
 
 
