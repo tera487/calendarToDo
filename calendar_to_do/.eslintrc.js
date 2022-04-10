@@ -4,8 +4,8 @@ module.exports = {
         // browser は不要になる
     },
     extends: [
-        'google',
-        'plugin:prettier/recommended',
-        // 'plugin:vue/recommended',
+        // 'google',
+        // "plugin:prettier/recommended",
+        "plugin:vue/recommended",
     ], // Google様に従う
 };
