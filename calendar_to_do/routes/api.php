@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('todo', ToDoController::class)->except('create', 'edit');
     Route::resource('generalSetting', GeneralSettingController::class)->only('show', 'update');
     Route::resource('calendar', CalendarController::class)->except('create', 'edit');
-    Route::resource('users', UserController::class)->only('update');
+    Route::apiResource('users', UserController::class)->only('update');
 });
 // パスワードリセット関連
 Route::prefix('passwordReset')->name('password_reset.')->group(function () {

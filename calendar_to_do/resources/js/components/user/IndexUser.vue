@@ -1,35 +1,49 @@
 <template>
-    <v-app class="my-10">
-        <v-card elevation="2" class="mb-5" style="max-width: 500px">
-            <v-list-item three-line>
-                <v-list-item-content>
-                    <v-list-item-title
-                        class="text-h5 mb-1 d-flex justify-space-between"
-                    >
-                        <p>アカウント情報</p>
-                        <v-btn
-                            elevation="2"
-                            @click="openEditDialog"
-                            style="max-width: 100px"
-                            >編集</v-btn
-                        >
-                    </v-list-item-title>
-                    <div class="mb-2">name: {{ user.name }}</div>
-                    <div class="mb-2">email: {{ user.email }}</div>
-                    <div class="mb-2">
-                        アカウント作成日: {{ moment(user.created_at) }}
-                    </div>
-                </v-list-item-content>
-            </v-list-item>
-        </v-card>
-        <v-btn elevation="2" @click="logout" style="max-width: 150px"
-            >ログアウト</v-btn
-        >
-        <edit-user-dialog
-            v-if="openDialog"
-            @colseDialog="colseEditDialog"
-        ></edit-user-dialog>
-    </v-app>
+  <v-app class="my-10">
+    <v-card
+      elevation="2"
+      class="mb-5"
+      style="max-width: 500px"
+    >
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title
+            class="text-h5 mb-1 d-flex justify-space-between"
+          >
+            <p>アカウント情報</p>
+            <v-btn
+              elevation="2"
+              style="max-width: 100px"
+              @click="openEditDialog"
+            >
+              編集
+            </v-btn>
+          </v-list-item-title>
+
+          <div class="mb-2">
+            name: {{ user.name }}
+          </div>
+          <div class="mb-2">
+            email: {{ user.email }}
+          </div>
+          <div class="mb-2">
+            アカウント作成日: {{ moment(user.created_at) }}
+          </div>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card>
+    <v-btn
+      elevation="2"
+      style="max-width: 150px"
+      @click="logout"
+    >
+      ログアウト
+    </v-btn>
+    <edit-user-dialog
+      v-if="openDialog"
+      @colseDialog="colseEditDialog"
+    />
+  </v-app>
 </template>
 
 <script>
