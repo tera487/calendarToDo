@@ -21,10 +21,6 @@
                   @change="handleFileUpload($event)"
                 />
               </template>
-              <input
-                type="file"
-                @change="handleFileUpload($event)"
-              >
               <v-text-field
                 v-model="user.name"
                 label="name"
@@ -60,6 +56,7 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators';
+import {mapActions} from 'vuex';
 
 export default {
     validations: {},
@@ -68,7 +65,7 @@ export default {
             user: {
                 name: null,
                 email: null,
-                icon:null,
+                icon_path:null,
                 password: null,
             },
         };
@@ -78,7 +75,6 @@ export default {
     mounted() {
         this.user.name = this.$store.state.auth.user.name;
         this.user.email = this.$store.state.auth.user.email;
-        this.user.icon = this.$store.state.auth.user.icon;
     },
     methods: {
         updateUser() {
@@ -88,18 +84,21 @@ export default {
           } 
           formData.append('name', this.user.name);
           formData.append('email', this.user.email);
-          formData.append('icon', this.user.icon);
+          if(this.user.icon_path !== null){
+            formData.append('icon_path', this.user.icon_path);
+          }
           formData.append('_method', 'PATCH');
           axios
             .post(`/api/users/${this.$store.state.auth.user.id}`, formData, {headers: {'content-type': 'multipart/form-data'}})
-            .then(() => {
-                this.$emit('colseDialog');
+            .then((res) => {
+              this.$store.dispatch("auth/update",res.data);
+              this.$emit('colseDialog');
             })
             .catch((err) => console.log(err))
             .finally(() => (this.loading = false));
         },
       handleFileUpload( event ){
-        this.user.icon = event;
+        this.user.icon_path = event;
       },
     },
 };

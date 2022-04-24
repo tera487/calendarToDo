@@ -66,7 +66,8 @@ export default {
             this.openDialog = true;
         },
         colseEditDialog() {
-            this.openDialog = false;
+          this.user = this.$store.state.auth.user,
+          this.openDialog = false;
         },
         ...mapActions({
             signOut: 'auth/logout',

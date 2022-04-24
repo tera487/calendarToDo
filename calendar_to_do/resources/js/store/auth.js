@@ -37,6 +37,10 @@ export default {
         logout({commit}){
             commit('SET_USER',{})
             commit('SET_AUTHENTICATED',false)
-        }
+        },
+        update({commit},data){
+            commit('SET_USER',data)
+            commit('SET_AUTHENTICATED',true)
+        }   
     }
 }

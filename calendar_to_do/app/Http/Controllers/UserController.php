@@ -9,13 +9,14 @@ class UserController extends Controller
 {
     public function update(Request $request, $id)
     {
-        $file_name = $id . '_' . $request->icon->getClientOriginalName();
-        $request->icon->storeAs('public', $file_name);
-
         $user = User::find($id);
         $user->fill($request->only(['name', 'email']));
-        $user->icon_path = 'storage/' . $file_name;
+        if (isset($request->icon_path)) {
+            $file_name = $id . '_' . $request->icon_path->getClientOriginalName();
+            $request->icon_path->storeAs('public', $file_name);
+            $user->icon_path = 'storage/' . $file_name;
+        }
         $user->save();
-        return;
+        return $user;
     }
 }
