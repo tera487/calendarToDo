@@ -8,23 +8,26 @@ use Illuminate\Support\Facades\Auth;
 
 class CalendarController extends Controller
 {
-    public function index(){
-        $calendar_items = Calendar::get(['name','start','end','id'])->toArray();
+    public function index()
+    {
+        $calendar_items = Calendar::where('user_id', Auth::id())->get(['name', 'start', 'end', 'id'])->toArray();
         return array_reverse($calendar_items);
     }
 
-    public function store(Calendar $calendar, Request $request){
-        $calendar->fill($request->only(['name', 'start','end']));
+    public function store(Calendar $calendar, Request $request)
+    {
+        $calendar->fill($request->only(['name', 'start', 'end']));
         $calendar->user_id = Auth::id();
         $calendar->save();
         return response()->json($calendar->id);
     }
 
-    
 
-    public function update($id, Request $request){
-        $calendar=Calendar::find($id);
-        $calendar->fill($request->only(['name', 'start','end']));
+
+    public function update($id, Request $request)
+    {
+        $calendar = Calendar::find($id);
+        $calendar->fill($request->only(['name', 'start', 'end']));
         $calendar->user_id = Auth::id();
         return $calendar->save();
     }
