@@ -94,179 +94,19 @@
 
               <v-card-text>
                 <v-container>
-                  <v-text-field
-                    v-model="createEvent.name"
-                    label="タイトル"
-                    :error-messages="nameErrors"
-                    @input="$v.createEvent.name.$touch()"
-                    @blur="$v.createEvent.name.$touch()"
+                  <form-calendar-name
+                    :schedule-name="createEvent.name"
+                    @optional-name="createEvent.name = $event"
                   />
                   <v-row>
-                    <v-col>
-                      <v-menu
-                        v-model="start_date_form"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template
-                          #activator="{
-                            on,
-                            attrs,
-                          }"
-                        >
-                          <v-text-field
-                            v-model="
-                              start_form.start_date
-                            "
-                            label="タイムゾーン"
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          />
-                        </template>
-                        <v-date-picker
-                          v-model="
-                            start_form.start_date
-                          "
-                          locale="ja-jp"
-                          @change="
-                            integrationDate('start')
-                          "
-                          @input="
-                            start_date_form = false
-                          "
-                        />
-                      </v-menu>
-                    </v-col>
-                    <v-col>
-                      <v-menu
-                        ref="start_time_form"
-                        v-model="start_time_form"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        :return-value.sync="
-                          start_form.start_time
-                        "
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                      >
-                        <template
-                          #activator="{
-                            on,
-                            attrs,
-                          }"
-                        >
-                          <v-text-field
-                            v-model="
-                              start_form.start_time
-                            "
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          />
-                        </template>
-                        <v-time-picker
-                          v-if="start_time_form"
-                          v-model="
-                            start_form.start_time
-                          "
-                          full-width
-                          @change="
-                            integrationDate('start')
-                          "
-                          @click:minute="
-                            $refs.start_time_form.save(
-                              start_form.start_time
-                            )
-                          "
-                        />
-                      </v-menu>
-                    </v-col>
-                    <v-col>
-                      <v-menu
-                        v-model="end_date_form"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        transition="scale-transition"
-                        offset-y
-                        min-width="auto"
-                      >
-                        <template
-                          #activator="{
-                            on,
-                            attrs,
-                          }"
-                        >
-                          <v-text-field
-                            v-model="
-                              end_form.end_date
-                            "
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          />
-                        </template>
-                        <v-date-picker
-                          v-model="end_form.end_date"
-                          locale="ja-jp"
-                          @change="
-                            integrationDate('end')
-                          "
-                          @input="
-                            end_date_form = false
-                          "
-                        />
-                      </v-menu>
-                    </v-col>
-                    <v-col>
-                      <v-menu
-                        ref="end_time_form"
-                        v-model="end_time_form"
-                        :close-on-content-click="false"
-                        :nudge-right="40"
-                        :return-value.sync="
-                          end_form.end_time
-                        "
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                      >
-                        <template
-                          #activator="{
-                            on,
-                            attrs,
-                          }"
-                        >
-                          <v-text-field
-                            v-model="
-                              end_form.end_time
-                            "
-                            readonly
-                            v-bind="attrs"
-                            v-on="on"
-                          />
-                        </template>
-                        <v-time-picker
-                          v-if="end_time_form"
-                          v-model="end_form.end_time"
-                          full-width
-                          @change="
-                            integrationDate('end')
-                          "
-                          @click:minute="
-                            $refs.end_time_form.save(
-                              end_form.end_time
-                            )
-                          "
-                        />
-                      </v-menu>
-                    </v-col>
+                    <form-calendar-date
+                      :selected-date="createEvent.start"
+                      @optional-date="createEvent.start = $event"
+                    />
+                    <form-calendar-date
+                      :selected-date="createEvent.end"
+                      @optional-date="createEvent.end = $event"
+                    />
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -285,38 +125,34 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
-          <!-- 削除確認ダイアログ-->
-          <delete-calendar-dialog
-            v-if="deleteDialog"
-            :selected-event-id="selectedEvent ? selectedEvent.id : ''"
-            :selected-event-name="
-              selectedEvent ? selectedEvent.name : ''
-            "
-            @colseDialog="colseDeleteDialog"
-          />
         </div>
+
+        <!-- 削除確認ダイアログ-->
+        <delete-calendar-dialog
+          v-if="deleteDialog"
+          :selected-event-id="selectedEvent ? selectedEvent.id : ''"
+          :selected-event-name="
+            selectedEvent ? selectedEvent.name : ''
+          "
+          @colseDialog="colseDeleteDialog"
+        />
       </v-sheet>
     </div>
   </v-app>
 </template>
 
 <script>
-import {required} from 'vuelidate/lib/validators';
 import DeleteCalendarDialog from './DeleteCalendarDialog.vue';
 import TheHerdarCalendar from './TheHerdarCalendar.vue';
+import FormCalendarDate from './form/FormCalendarDate.vue';
+import FormCalendarName from './form/FormCalendarName.vue';
 
 export default {
   components: {
     TheHerdarCalendar,
     DeleteCalendarDialog,
-  },
-  validations: {
-    createEvent: {
-      name: {required},
-      start: {required},
-      end: {required},
-    },
+    FormCalendarDate,
+    FormCalendarName,
   },
   data: () => ({
     calendar_json: {
@@ -354,25 +190,11 @@ export default {
       end: null,
     },
 
-    start_date_form: null,
-    start_time_form: null,
-    start_form: {
-      start_date: null,
-      start_time: null,
-    },
-
     createStart: null,
     extendOriginal: null,
 
     numberId: 0,
     dialog: false,
-
-    end_date_form: null,
-    end_time_form: null,
-    end_form: {
-      end_date: null,
-      end_time: null,
-    },
 
     selectedEvent: {},
     selectedElement: null,
@@ -380,30 +202,6 @@ export default {
 
     deleteDialog: false,
   }),
-  computed: {
-    nameErrors() {
-      const errors = [];
-      if (!this.$v.createEvent.name.$dirty) return errors;
-      !this.$v.createEvent.name.required &&
-                errors.push('タイトルは必須です。');
-      return errors;
-    },
-    startErrors() {
-      const errors = [];
-      if (!this.$v.createEvent.start.$dirty) return errors;
-      !this.$v.createEvent.start.required &&
-                errors.push('タイムゾーンは必須です。');
-      return errors;
-    },
-    endErrors() {
-      const errors = [];
-      if (!this.$v.createEvent.end.$dirty) return errors;
-      !this.$v.createEvent.end.reuired &&
-                errors.push('タイムゾーンは必須です。');
-      return errors;
-    },
-
-  },
   mounted() {
     axios
         .get(`/api/generalSetting/${this.$store.state.auth.user.id}`)
@@ -412,7 +210,6 @@ export default {
         });
 
     axios.get('/api/calendar').then((response) => {
-      const data = response.data;
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].start = new Date(response.data[i].start);
         response.data[i].end = new Date(response.data[i].end);
@@ -430,13 +227,6 @@ export default {
         this.selectedOpen = false;
       }
       this.deleteDialog = false;
-    },
-    integrationDate(status) {
-      if (status == 'start') {
-        this.createEvent.start = `${this.start_form.start_date} ${this.start_form.start_time}`;
-      } else {
-        this.createEvent.end = `${this.end_form.end_date} ${this.end_form.end_time}`;
-      }
     },
     deleteConfirm() {
       this.deleteDialog = true;
@@ -474,7 +264,6 @@ export default {
         this.extendOriginal = null;
       }
     },
-
     startTime(tms) {
       const mouse = this.toTime(tms);
 
@@ -530,51 +319,44 @@ export default {
       this.dialog = true;
       this.createEvent = this.selectedEvent;
       this.createEvent.start = this.dateFormat(this.selectedEvent.start);
-      this.settingStartForm();
-
       this.createEvent.end = this.dateFormat(this.selectedEvent.end);
-      this.settingEndForm();
     },
-
     validationEventform() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        this.dialog = false;
-        if (this.createEvent.id !== this.selectedEvent.id) {
-          axios
-              .post('/api/calendar', this.createEvent)
-              .then((res) => {
-                this.createEvent.start = new Date(
-                    this.createEvent.start,
-                );
-                this.createEvent.end = new Date(
-                    this.createEvent.end,
-                );
-                this.createEvent.id = res.data;
+      this.dialog = false;
+      if (this.createEvent.id !== this.selectedEvent.id) {
+        axios
+            .post('/api/calendar', this.createEvent)
+            .then((res) => {
+              this.createEvent.start = new Date(
+                  this.createEvent.start,
+              );
+              this.createEvent.end = new Date(
+                  this.createEvent.end,
+              );
+              this.createEvent.id = res.data;
 
-                this.events.push(this.createEvent);
-                this.resetCreateEvent();
-              })
-              .catch((err) => console.log(err))
-              .finally(() => (this.loading = false));
-        } else {
-          axios
-              .patch(
-                  `/api/calendar/${this.createEvent.id}`,
-                  this.createEvent,
-              )
-              .then((res) => {
-                this.createEvent.start = new Date(
-                    this.createEvent.start,
-                );
-                this.createEvent.end = new Date(
-                    this.createEvent.end,
-                );
-                this.resetCreateEvent();
-              })
-              .catch((err) => console.log(err))
-              .finally(() => (this.loading = false));
-        }
+              this.events.push(this.createEvent);
+              this.resetCreateEvent();
+            })
+            .catch((err) => console.log(err))
+            .finally(() => (this.loading = false));
+      } else {
+        axios
+            .patch(
+                `/api/calendar/${this.createEvent.id}`,
+                this.createEvent,
+            )
+            .then((res) => {
+              this.createEvent.start = new Date(
+                  this.createEvent.start,
+              );
+              this.createEvent.end = new Date(
+                  this.createEvent.end,
+              );
+              this.resetCreateEvent();
+            })
+            .catch((err) => console.log(err))
+            .finally(() => (this.loading = false));
       }
     },
 
@@ -586,17 +368,6 @@ export default {
       };
     },
 
-    settingStartForm() {
-      const timezoneStart = this.createEvent.start.split(' ');
-      this.start_form.start_date = timezoneStart[0];
-      this.start_form.start_time = timezoneStart[1];
-    },
-    settingEndForm() {
-      const timezoneEnd = this.createEvent.end.split(' ');
-      this.end_form.end_date = timezoneEnd[0];
-      this.end_form.end_time = timezoneEnd[1];
-    },
-
     //	マウスボタンが離されたとき
     endDrag() {
       if (this.createEvent.name !== null) {
@@ -604,10 +375,7 @@ export default {
         this.createEvent.start = this.dateFormat(
             this.createEvent.start,
         );
-        this.settingStartForm();
-
         this.createEvent.end = this.dateFormat(this.createEvent.end);
-        this.settingEndForm();
       }
 
       if (this.dragEvent !== null) {
@@ -682,18 +450,7 @@ export default {
           tms.minute,
       ).getTime();
     },
-    getEventColor(event) {
-      const rgb = parseInt(event.color.substring(1), 16);
-      const r = (rgb >> 16) & 0xff;
-      const g = (rgb >> 8) & 0xff;
-      const b = (rgb >> 0) & 0xff;
 
-      return event === this.dragEvent ?
-                `rgba(${r}, ${g}, ${b}, 0.7)` :
-                event === this.createEvent ?
-                `rgba(${r}, ${g}, ${b}, 0.7)` :
-                event.color;
-    },
     rndElement(arr) {
       return arr[this.rnd(0, arr.length - 1)];
     },
