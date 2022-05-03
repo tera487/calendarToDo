@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar;
+use App\Models\User;
+use App\Notifications\CalendarNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +21,9 @@ class CalendarController extends Controller
         $calendar->fill($request->only(['name', 'start', 'end']));
         $calendar->user_id = Auth::id();
         $calendar->save();
+
+        $user = User::find($calendar->user_id);
+        $user->notify(new CalendarNotice($request->name, $request->start, $request->end, Auth::user()));
         return response()->json($calendar->id);
     }
 
