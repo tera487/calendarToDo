@@ -1,11 +1,12 @@
 Calendar Schedule
+
 {{ $user }}様
-新しく予定が追加されました。
+5分後に{{$name}}が始ります
 
 予定：{{$name}}
 日時：{{$startDate}} 〜 {{$endDate}}
 
-ログインをする?
+予定を確認する?
 {{request()->fullUrl()}}
 
 

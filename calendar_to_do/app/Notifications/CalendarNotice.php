@@ -16,8 +16,9 @@ class CalendarNotice extends Notification
      *
      * @return void
      */
-    public function __construct(string $name, string $startDate, string $endDate, $user)
+    public function __construct(string $view, string $name, string $startDate, string $endDate, $user)
     {
+        $this->view = $view;
         $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
@@ -51,7 +52,7 @@ class CalendarNotice extends Notification
             'user'  => $this->userName,
         ];
 
-        return (new MailMessage)->markdown('mails.calendar_event_mail', $sendData);
+        return (new MailMessage)->markdown($this->view, $sendData);
     }
 
     /**
