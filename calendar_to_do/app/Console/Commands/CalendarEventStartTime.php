@@ -4,8 +4,7 @@ namespace App\Console\Commands;
 
 use App\Consts\NotificationConst;
 use App\Models\Calendar;
-use App\Models\User;
-use App\Notifications\CalendarNotice;
+use App\Event\NotifyUserSchedule;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -44,12 +43,11 @@ class CalendarEventStartTime extends Command
     {
         $eventDate = (Carbon::now())->addMinute(5);
         $eventDate->second = 0;
-        $noticeEvents = Calendar::where('start', $eventDate)->get()->toArray();
+        $noticeEvents = Calendar::where('start', $eventDate)->get();
 
         logger($noticeEvents);
         foreach ($noticeEvents as $noticeEvent) {
-            $user = User::find($noticeEvent['user_id']);
-            $user->notify(new CalendarNotice(NotificationConst::CALENDAR_MAIL_BATCH, $noticeEvent['name'], $noticeEvent['start'], $noticeEvent['end'], $user));
+            event(new NotifyUserSchedule(NotificationConst::CALENDAR_MAIL_BATCH, $noticeEvent));
         }
     }
 }

@@ -7,7 +7,7 @@ Calendar Schedule
 日時：{{$startDate}} 〜 {{$endDate}}
 
 予定を確認する?
-{{request()->fullUrl()}}
+{{url('/')}}
 
 
 ※※※※※本メールは送信専用のメールアドレスから送信しております。ご返信できませんのでご了承ください。※※※※※

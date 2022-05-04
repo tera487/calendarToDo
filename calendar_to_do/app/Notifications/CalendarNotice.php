@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
+use App\Models\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -16,12 +18,12 @@ class CalendarNotice extends Notification
      *
      * @return void
      */
-    public function __construct(string $view, string $name, string $startDate, string $endDate, $user)
+    public function __construct(string $view, Calendar $calendar, User $user)
     {
         $this->view = $view;
-        $this->name = $name;
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
+        $this->name = $calendar->name;
+        $this->startDate = $calendar->start;
+        $this->endDate = $calendar->end;
         $this->userName = $user->name;
         $this->userEmail = $user->email;
     }

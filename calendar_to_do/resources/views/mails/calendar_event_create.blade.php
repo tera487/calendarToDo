@@ -7,7 +7,7 @@ Calendar Schedule
 日時：{{$startDate}} 〜 {{$endDate}}
 
 ログインをする?
-{{request()->fullUrl()}}
+{{url('/')}}
 
 
 ※※※※※本メールは送信専用のメールアドレスから送信しております。ご返信できませんのでご了承ください。※※※※※
