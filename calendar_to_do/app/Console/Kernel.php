@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +17,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('event-start-time')->everyFiveMinutes(); //五分
-        $schedule->command('event-start-time')->everyMinute(); //毎分
+        if (!App::environment('local')) {
+            $schedule->command('event-start-time')->everyMinute(); //毎分
+        }
     }
 
     /**
@@ -26,7 +29,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
