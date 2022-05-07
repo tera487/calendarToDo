@@ -26,7 +26,10 @@ class CalendarController extends Controller
         return response()->json($calendar->id);
     }
 
-
+    public function search(Request $request)
+    {
+        return response()->json(array_reverse(Calendar::where('user_id', Auth::id())->where('name', 'LIKE', '%' . $request->searchItem . '%')->get(['name', 'start', 'end', 'id', 'updated_at'])->toArray()));
+    }
 
     public function update($id, Request $request)
     {

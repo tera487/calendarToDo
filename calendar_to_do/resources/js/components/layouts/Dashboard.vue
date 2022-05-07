@@ -70,30 +70,30 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex';
 
 export default {
-    name:"DashboardLayout",
+  name: 'DashboardLayout',
 
-    data () {
-      return {
-        cards: ['Today', 'Yesterday'],
-        drawer: null,
-        links: [
-            ['indexCalendar','event', 'calendar'],
-            ['indexToDo','task', 'Todo'],
-            ['indexUser','account_circle', 'account'],
-            ['showGeneralSetting','settings', 'setting'],
-        ],
-        picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      }
-    },
-    computed: {
-        ...mapGetters('auth', [
-        'user'
-        ])
-    },
-}
+  data() {
+    return {
+      cards: ['Today', 'Yesterday'],
+      drawer: null,
+      links: [
+        ['indexCalendar', 'event', 'Calendar'],
+        ['indexToDo', 'task', 'Todo'],
+        ['indexUser', 'account_circle', 'Account'],
+        ['showGeneralSetting', 'settings', 'Setting'],
+      ],
+      picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    };
+  },
+  computed: {
+    ...mapGetters('auth', [
+      'user',
+    ]),
+  },
+};
 </script>
 
 <style scoped>

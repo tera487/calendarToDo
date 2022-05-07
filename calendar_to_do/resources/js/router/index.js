@@ -1,20 +1,20 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import store from '../store'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from '../store';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 /* Guest Component */
-const Login = () => import('../components/auth/Login.vue' /* webpackChunkName: "resource/js/components/login" */)
-const Register = () => import('../components/auth/Register.vue' /* webpackChunkName: "resource/js/components/register" */)
+const Login = () => import('../components/auth/Login.vue' /* webpackChunkName: "resource/js/components/login" */);
+const Register = () => import('../components/auth/Register.vue' /* webpackChunkName: "resource/js/components/register" */);
 /* Guest Component */
 
 /* Layouts */
-const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */)
+const DahboardLayout = () => import('../components/Layouts/Dashboard.vue' /* webpackChunkName: "resource/js/components/layouts/dashboard" */);
 /* Layouts */
 
 /* Authenticated Component */
-const Dashboard = () => import('../components/auth/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */)
+const Dashboard = () => import('../components/auth/Dashboard.vue' /* webpackChunkName: "resource/js/components/dashboard" */);
 /* Authenticated Component */
 
 // password reset
@@ -27,6 +27,7 @@ import CreateToDo from '../components/todos/CreateToDo.vue';
 
 // calendar
 import IndexCalendar from '../components/calendar/IndexCalendar.vue';
+import SearchCalendar from '../components/calendar/SearchCalendar.vue';
 
 
 // generalSetting
@@ -46,114 +47,120 @@ Vue.component('ErrorRequired', require('../components/error/ErrorRequired.vue').
 
 const Routes = [
   {
-    name:"login",
-    path:"/login",
-    component:Login,
-    meta:{
-        middleware:"guest",
-        title:`Login`
-    }
-  },
-  {
-    name:"register",
-    path:"/register",
-    component:Register,
-    meta:{
-        middleware:"guest",
-        title:`Register`
-    }
-  },
-  {
-    name:"passwordReset",
-    path:"/passwordReset/email",
-    component:ResetPasswordForm,
-    meta:{
-        middleware:"guest",
-        title:`Register`
-    }
-  },
-  {
-    name:"sendComplete",
-    path:"/passwordReset/send",
-    component:SendComplete,
-    meta:{
-        middleware:"guest",
-        title:`Register`
-    }
-  },
-  {
-    path:"/",
-    component:DahboardLayout,
-    meta:{
-        middleware:"auth"
+    name: 'login',
+    path: '/login',
+    component: Login,
+    meta: {
+      middleware: 'guest',
+      title: `Login`,
     },
-    children:[
-
-        {
-            name:"dashboard",
-            path: '/',
-            meta:{middleware:"auth"},
-            component: IndexCalendar,
-        },
-        //accout
-        {
-            name: 'indexUser',
-            path: '/user',
-            meta:{middleware:"auth"},
-            component: IndexUser,
-        },
-        // todo
-        {
-            name: 'indexToDo',
-            path: '/todo',
-            meta:{middleware:"auth"},
-            component: IndexToDo,
-        },
-        {
-            name: 'createToDo',
-            path: '/todo/create',
-            meta:{middleware:"auth"},
-            component: CreateToDo,
-        },
-        //calendar
-        {
-            name: 'indexCalendar',
-            path: '/calendar',
-            meta:{middleware:"auth"},
-            component: IndexCalendar,
-        },
-
-        //generalSetting
-        {
-            name: 'showGeneralSetting',
-            path: `/generalSetting/:id`,
-            meta:{middleware:"auth"},
-            component: showGeneralSetting,
-        },
-
-    ]
   },
-]
+  {
+    name: 'register',
+    path: '/register',
+    component: Register,
+    meta: {
+      middleware: 'guest',
+      title: `Register`,
+    },
+  },
+  {
+    name: 'passwordReset',
+    path: '/passwordReset/email',
+    component: ResetPasswordForm,
+    meta: {
+      middleware: 'guest',
+      title: `Register`,
+    },
+  },
+  {
+    name: 'sendComplete',
+    path: '/passwordReset/send',
+    component: SendComplete,
+    meta: {
+      middleware: 'guest',
+      title: `Register`,
+    },
+  },
+  {
+    path: '/',
+    component: DahboardLayout,
+    meta: {
+      middleware: 'auth',
+    },
+    children: [
 
-var router  = new VueRouter({
+      {
+        name: 'dashboard',
+        path: '/',
+        meta: {middleware: 'auth'},
+        component: IndexCalendar,
+      },
+      // accout
+      {
+        name: 'indexUser',
+        path: '/user',
+        meta: {middleware: 'auth'},
+        component: IndexUser,
+      },
+      // todo
+      {
+        name: 'indexToDo',
+        path: '/todo',
+        meta: {middleware: 'auth'},
+        component: IndexToDo,
+      },
+      {
+        name: 'createToDo',
+        path: '/todo/create',
+        meta: {middleware: 'auth'},
+        component: CreateToDo,
+      },
+      // calendar
+      {
+        name: 'indexCalendar',
+        path: '/calendar',
+        meta: {middleware: 'auth'},
+        component: IndexCalendar,
+      },
+      {
+        name: 'searchCalendar',
+        path: '/calendar/search',
+        meta: {middleware: 'auth'},
+        component: SearchCalendar,
+      },
+
+      // generalSetting
+      {
+        name: 'showGeneralSetting',
+        path: `/generalSetting/:id`,
+        meta: {middleware: 'auth'},
+        component: showGeneralSetting,
+      },
+
+    ],
+  },
+];
+
+const router = new VueRouter({
   mode: 'history',
-  routes: Routes
-})
+  routes: Routes,
+});
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} - ${process.env.MIX_APP_NAME}`
-  if(to.meta.middleware=="guest"){
-      if(store.state.auth.authenticated){
-          next({name:"dashboard"})
-      }
-      next()
-  }else{
-      if(store.state.auth.authenticated){
-          next()
-      }else{
-          next({name:"login"})
-      }
+  document.title = `${to.meta.title} - ${process.env.MIX_APP_NAME}`;
+  if (to.meta.middleware=='guest') {
+    if (store.state.auth.authenticated) {
+      next({name: 'dashboard'});
+    }
+    next();
+  } else {
+    if (store.state.auth.authenticated) {
+      next();
+    } else {
+      next({name: 'login'});
+    }
   }
-})
+});
 
-export default router
+export default router;
