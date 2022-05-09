@@ -12,7 +12,7 @@
         @input="$v.todo.title.$touch()"
         @blur="$v.todo.title.$touch()"
       />
-        
+
       <v-textarea
         v-model="todo.content"
         name="input-7-1"
@@ -85,84 +85,84 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
-import { validationMixin } from 'vuelidate'
+import {required} from 'vuelidate/lib/validators';
+import {validationMixin} from 'vuelidate';
 
-export default{
+export default {
   mixins: [validationMixin],
-  data(){
-    return{
-      start_date_form:null,
-      end_date_form:null,
-      todo:{
+  data() {
+    return {
+      start_date_form: null,
+      end_date_form: null,
+      todo: {
       },
       errors: null,
-    }  
+    };
   },
   validations: {
-      todo: {
-          title: {
-              required,
-          },
-          content: {
-              required,
-          },
-          // start_date: {
-          //     required,
-          // },
-          end_date: {
-              required,
-          },
-      }
+    todo: {
+      title: {
+        required,
+      },
+      content: {
+        required,
+      },
+      // start_date: {
+      //     required,
+      // },
+      end_date: {
+        required,
+      },
+    },
   },
   computed: {
-    titleErrors () {
-      const errors = []
-      if (!this.$v.todo.title.$dirty) return errors
-      !this.$v.todo.title.required && errors.push('タイトルは必須です。')
-      return errors
+    titleErrors() {
+      const errors = [];
+      if (!this.$v.todo.title.$dirty) return errors;
+      !this.$v.todo.title.required && errors.push('タイトルは必須です。');
+      return errors;
     },
-    contentErrors () {
-      const errors = []
-      if (!this.$v.todo.content.$dirty) return errors
-      !this.$v.todo.content.required && errors.push('内容は必須です。')
-      return errors
+    contentErrors() {
+      const errors = [];
+      if (!this.$v.todo.content.$dirty) return errors;
+      !this.$v.todo.content.required && errors.push('内容は必須です。');
+      return errors;
     },
-    endDateErrors () {
-      const errors = []
-      if (!this.$v.todo.end_date.$dirty) return errors
-      !this.$v.todo.end_date.required && errors.push('期限は必須です。')
-      return errors
+    endDateErrors() {
+      const errors = [];
+      if (!this.$v.todo.end_date.$dirty) return errors;
+      !this.$v.todo.end_date.required && errors.push('期限は必須です。');
+      return errors;
     },
   },
 
   created() {
-    if(this.$route.params.id){
+    if (this.$route.params.id) {
       axios
           .get(`/api/todos/${this.$route.params.id}`)
           .then((res) => {
-              this.todo = res.data;
+            this.todo = res.data;
           });
     }
   },
-  methods:{
-    addToDo(){
+  methods: {
+    addToDo() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        if(this.$route.params.id){
+        if (this.$route.params.id) {
           axios
-          .post(`/api/todo/${this.$route.params.id}`, this.todo)
+              .post(`/api/todo/${this.$route.params.id}`, this.todo)
               .then(() => {
-                  this.$router.push({ name: 'indexToDo' });
+                this.$router.push({name: 'indexToDo'});
               });
-        }else{
+        } else {
           axios.post('/api/todo', this.todo)
-          .then(response => (
-            this.$router.push({ name: 'indexToDo' })
-          ))
-          .catch(err => console.log(err))
-          .finally(() => this.loading = false)
-        }  
+              .then((response) => (
+                this.$router.push({name: 'indexToDo'})
+              ))
+              .catch((err) => console.log(err))
+              .finally(() => this.loading = false);
+        }
       }
     },
     // submit () {
@@ -170,5 +170,5 @@ export default{
     // },
   },
 
-}
+};
 </script>

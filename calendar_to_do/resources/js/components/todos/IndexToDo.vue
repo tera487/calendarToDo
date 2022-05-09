@@ -56,29 +56,29 @@
 </template>
 
 <script >
-  export default{
-    data() {
-      return{
-        todos:[]
-      }
-    },
-    created() {
-      axios
-      .get('/api/todo/')
-      .then(response => {
+export default {
+  data() {
+    return {
+      todos: [],
+    };
+  },
+  created() {
+    axios
+        .get('/api/todo/')
+        .then((response) => {
           this.todos = response.data;
-      });
+        });
+  },
+  methods: {
+    deleteProduct(id) {
+      axios
+          .delete(`api/todo/${id}`)
+          .then(() => {
+            const i = this.todos.map((data) => data.id).indexOf(id);
+            this.todos.splice(i, 1);
+          })
+          .catch((err) => console.log(err));
     },
-    methods:{
-      deleteProduct(id) { 
-          axios
-              .delete(`api/todo/${id}`)
-              .then(() => {
-                  let i = this.todos.map(data => data.id).indexOf(id);
-                  this.todos.splice(i, 1)
-              })
-              .catch(err => console.log(err));
-      }
-    }
-  }
+  },
+};
 </script>
