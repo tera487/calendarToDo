@@ -7,7 +7,6 @@
         @prevCalendar="$refs.calendar.prev();"
         @nextCalendar="$refs.calendar.next()"
       />
-
       <v-sheet height="600">
         <v-calendar
           ref="calendar"
@@ -28,57 +27,15 @@
           @mouseleave.native="cancelDrag"
           @click:event="showEvent"
         />
-        <v-menu
-          v-model="selectedOpen"
-          :close-on-content-click="false"
-          :activator="selectedElement"
-          offset-x
-        >
-          <v-card
-            color="grey lighten-4"
-            min-width="350px"
-            flat
-          >
-            <v-toolbar
-              :color="selectedEvent.color"
-              dark
-            >
-              <v-toolbar-title
-                v-html="selectedEvent.name"
-              />
-              <v-spacer />
-              <v-btn icon>
-                <v-icon @click="editEvent">
-                  mdi-pencil
-                </v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon @click="deleteConfirm()">
-                  delete
-                </v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-card-text>
-              <span
-                v-html="dateFormat(selectedEvent.start)"
-              />
-              〜
-              <span v-html="dateFormat(selectedEvent.end)" />
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                text
-                color="secondary"
-                @click="selectedOpen = false"
-              >
-                Cancel
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
+
+        <detail-calendar-dialog
+          :selected-event="selectedEvent"
+          :is-selected-open="selectedOpen"
+          :selected-element="selectedElement"
+          @openDeleteDialog="deleteDialog = true"
+          @closeDetailDialog="selectedOpen = false"
+          @editEvent="editEvent()"
+        />
 
         <!-- スケジュール追加・編集のダイアログ -->
         <div class="text-center">
@@ -106,6 +63,13 @@
                     <form-calendar-date
                       :selected-date="createEvent.end"
                       @optional-date="createEvent.end = $event"
+                    />
+
+                    <v-textarea
+                      v-model="createEvent.description"
+                      name="input-7-1"
+                      label="説明"
+                      rows="3"
                     />
                   </v-row>
                 </v-container>
@@ -142,6 +106,7 @@
 </template>
 
 <script>
+import DetailCalendarDialog from './DetailCalendarDialog.vue';
 import DeleteCalendarDialog from './DeleteCalendarDialog.vue';
 import TheHerdarCalendar from './TheHerdarCalendar.vue';
 import FormCalendarDate from './form/FormCalendarDate.vue';
@@ -151,6 +116,7 @@ export default {
   components: {
     TheHerdarCalendar,
     DeleteCalendarDialog,
+    DetailCalendarDialog,
     FormCalendarDate,
     FormCalendarName,
   },
@@ -188,6 +154,7 @@ export default {
       name: null,
       start: null,
       end: null,
+      description: null,
     },
 
     createStart: null,
@@ -227,9 +194,6 @@ export default {
         this.selectedOpen = false;
       }
       this.deleteDialog = false;
-    },
-    deleteConfirm() {
-      this.deleteDialog = true;
     },
     showEvent({nativeEvent, event}) {
       const open = () => {
@@ -278,6 +242,7 @@ export default {
           color: this.rndElement(this.colors),
           start: this.createStart,
           end: this.createStart,
+          description: null,
           timed: true,
           id: 0,
         };
@@ -320,6 +285,7 @@ export default {
       this.createEvent = this.selectedEvent;
       this.createEvent.start = this.dateFormat(this.selectedEvent.start);
       this.createEvent.end = this.dateFormat(this.selectedEvent.end);
+      this.createEvent.description = this.selectedEvent.description;
     },
     validationEventform() {
       this.dialog = false;
@@ -365,10 +331,11 @@ export default {
         name: null,
         start: null,
         end: null,
+        description: null,
       };
     },
 
-    //	マウスボタンが離されたとき
+    // マウスボタンが離されたとき
     endDrag() {
       if (this.createEvent.name !== null) {
         this.dialog = true;

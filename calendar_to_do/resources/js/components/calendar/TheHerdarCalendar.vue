@@ -8,7 +8,21 @@
         </h3>
       </v-list-item-icon>
     </v-col>
-    <v-col class="text-right d-flex">
+    <v-col>
+      <form-calendar-search
+        :is-search="isCalendarSearch"
+      />
+    </v-col>
+    <v-col
+      v-if="!isCalendarSearch"
+      class="text-right d-flex"
+    >
+      <v-icon
+        v-if="!isCalendarSearch"
+        @click="isCalendarSearch = true"
+      >
+        search
+      </v-icon>
       <v-select
         :value="calenderType"
         :items="types"
@@ -39,12 +53,17 @@
 </template>
 
 <script>
+import FormCalendarSearch from './form/FormCalendarSearch.vue';
 export default {
+  components: {
+    FormCalendarSearch,
+  },
   props: {
     calenderType: {type: String},
   },
   data: () => ({
     types: ['month', 'week', 'day', '4day'],
+    isCalendarSearch: false,
   }),
 };
 </script>

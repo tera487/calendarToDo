@@ -12,13 +12,13 @@ class CalendarController extends Controller
 {
     public function index()
     {
-        $calendar_items = Calendar::where('user_id', Auth::id())->get(['name', 'start', 'end', 'id'])->toArray();
+        $calendar_items = Calendar::where('user_id', Auth::id())->get(['name', 'start', 'end', 'id', 'description'])->toArray();
         return array_reverse($calendar_items);
     }
 
     public function store(Calendar $calendar, Request $request)
     {
-        $calendar->fill($request->only(['name', 'start', 'end']));
+        $calendar->fill($request->only(['name', 'start', 'end', 'description']));
         $calendar->user_id = Auth::id();
         $calendar->save();
 
@@ -26,12 +26,15 @@ class CalendarController extends Controller
         return response()->json($calendar->id);
     }
 
-
+    public function search(Request $request)
+    {
+        return response()->json(array_reverse(Calendar::where('user_id', Auth::id())->where('name', 'LIKE', '%' . $request->searchItem . '%')->get(['name', 'start', 'end', 'id', 'description', 'updated_at'])->toArray()));
+    }
 
     public function update($id, Request $request)
     {
         $calendar = Calendar::find($id);
-        $calendar->fill($request->only(['name', 'start', 'end']));
+        $calendar->fill($request->only(['name', 'start', 'end', 'description']));
         $calendar->user_id = Auth::id();
         return $calendar->save();
     }
