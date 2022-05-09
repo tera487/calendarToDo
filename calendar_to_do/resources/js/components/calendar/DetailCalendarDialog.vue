@@ -33,13 +33,26 @@
         </v-btn>
       </v-toolbar>
       <v-card-text>
-        <span>
-          {{ dateFormat(selectedEvent.start) }}
-        </span>
-        〜
-        <span>
-          {{ dateFormat(selectedEvent.end) }}
-        </span>
+        <v-row>
+          <v-col cols="12">
+            <v-icon class="mr-2">
+              schedule
+            </v-icon>
+            <span>
+              {{ dateFormat(selectedEvent.start) }}
+            </span>
+            〜
+            <span>
+              {{ dateFormat(selectedEvent.end) }}
+            </span>
+          </v-col>
+          <v-col cols="12">
+            <v-icon class="mr-2">
+              description
+            </v-icon>
+            <span>{{ selectedEvent.description }}</span>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-btn

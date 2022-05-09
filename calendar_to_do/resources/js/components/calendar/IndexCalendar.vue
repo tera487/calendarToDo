@@ -64,6 +64,13 @@
                       :selected-date="createEvent.end"
                       @optional-date="createEvent.end = $event"
                     />
+
+                    <v-textarea
+                      v-model="createEvent.description"
+                      name="input-7-1"
+                      label="説明"
+                      rows="3"
+                    />
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -147,6 +154,7 @@ export default {
       name: null,
       start: null,
       end: null,
+      description: null,
     },
 
     createStart: null,
@@ -234,6 +242,7 @@ export default {
           color: this.rndElement(this.colors),
           start: this.createStart,
           end: this.createStart,
+          description: null,
           timed: true,
           id: 0,
         };
@@ -276,6 +285,7 @@ export default {
       this.createEvent = this.selectedEvent;
       this.createEvent.start = this.dateFormat(this.selectedEvent.start);
       this.createEvent.end = this.dateFormat(this.selectedEvent.end);
+      this.createEvent.description = this.selectedEvent.description;
     },
     validationEventform() {
       this.dialog = false;
@@ -321,6 +331,7 @@ export default {
         name: null,
         start: null,
         end: null,
+        description: null,
       };
     },
 
