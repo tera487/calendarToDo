@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -33,14 +34,37 @@ class calendarTest extends TestCase
     //     $response->assertOk();
     // }
 
+    private function getDemoCalendar()
+    {
+        $now = Carbon::now();
+        return
+            $this->demoCalender = [
+                'name' => "test terao",
+                'description' => "これはテストです",
+                'is_send' => 0,
+                'start' => $now->toDateTimeString(),
+                'end' => $now->addDays(5)->toDateTimeString(),
+                'user_id' => $this->user->id,
+            ];
+    }
 
-    public function test_get_calendar_event()
+    public function test_index_calendar_event()
     {
         $this->loginedUser();
         $this->createCalendarEvents();
         $response = $this->get('/api/calendar');
         $response->assertOk();
         $response->assertJsonCount(3);
+        $this->deleteCalendar();
+        $this->deleteUser();
+    }
+
+    public function test_store_calendar_event()
+    {
+        $this->user = $this->loginedUser();
+        $response = $this->postJson('/api/calendar', $this->getDemoCalendar());
+        $response->assertOk();
+        $this->assertDatabaseHas('calendars', $this->demoCalender);
         $this->deleteCalendar();
         $this->deleteUser();
     }
