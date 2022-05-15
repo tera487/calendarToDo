@@ -38,58 +38,16 @@
         />
 
         <!-- スケジュール追加・編集のダイアログ -->
-        <div class="text-center">
-          <v-dialog
-            v-model="dialog"
-            width="500"
-            @click:outside="resetCreateEvent"
-          >
-            <v-card>
-              <v-card-title class="text-h5 grey lighten-2">
-                スケージュール
-              </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <form-calendar-name
-                    :schedule-name="createEvent.name"
-                    @optional-name="createEvent.name = $event"
-                  />
-                  <v-row>
-                    <form-calendar-date
-                      :selected-date="createEvent.start"
-                      @optional-date="createEvent.start = $event"
-                    />
-                    <form-calendar-date
-                      :selected-date="createEvent.end"
-                      @optional-date="createEvent.end = $event"
-                    />
-
-                    <v-textarea
-                      v-model="createEvent.description"
-                      name="input-7-1"
-                      label="説明"
-                      rows="3"
-                    />
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
-              <v-divider />
-
-              <v-card-actions>
-                <v-spacer />
-                <v-btn
-                  color="primary"
-                  text
-                  @click="validationEventform"
-                >
-                  保存
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
+        <the-add-calendar
+          :is-dialog="isDialog"
+          :create-event="createEvent"
+          @resetCreateEvent="resetCreateEvent()"
+          @optional-name="createEvent.name = $event"
+          @optional-date-start="createEvent.start = $event"
+          @optional-date-end="createEvent.end = $event"
+          @changeDescription="createEvent.description = $event"
+          @validationEventform="validationEventform()"
+        />
 
         <!-- 削除確認ダイアログ-->
         <delete-calendar-dialog
@@ -109,16 +67,14 @@
 import DetailCalendarDialog from './DetailCalendarDialog.vue';
 import DeleteCalendarDialog from './DeleteCalendarDialog.vue';
 import TheHerdarCalendar from './TheHerdarCalendar.vue';
-import FormCalendarDate from './form/FormCalendarDate.vue';
-import FormCalendarName from './form/FormCalendarName.vue';
+import TheAddCalendar from './TheAddCalendar.vue';
 
 export default {
   components: {
     TheHerdarCalendar,
     DeleteCalendarDialog,
     DetailCalendarDialog,
-    FormCalendarDate,
-    FormCalendarName,
+    TheAddCalendar,
   },
   data: () => ({
     calendar_json: {
@@ -161,7 +117,7 @@ export default {
     extendOriginal: null,
 
     numberId: 0,
-    dialog: false,
+    isDialog: false,
 
     selectedEvent: {},
     selectedElement: null,
@@ -281,14 +237,14 @@ export default {
     },
 
     editEvent() {
-      this.dialog = true;
+      this.isDialog = true;
       this.createEvent = this.selectedEvent;
       this.createEvent.start = this.dateFormat(this.selectedEvent.start);
       this.createEvent.end = this.dateFormat(this.selectedEvent.end);
       this.createEvent.description = this.selectedEvent.description;
     },
     validationEventform() {
-      this.dialog = false;
+      this.isDialog = false;
       if (this.createEvent.id !== this.selectedEvent.id) {
         axios
             .post('/api/calendar', this.createEvent)
@@ -338,7 +294,7 @@ export default {
     // マウスボタンが離されたとき
     endDrag() {
       if (this.createEvent.name !== null) {
-        this.dialog = true;
+        this.isDialog = true;
         this.createEvent.start = this.dateFormat(
             this.createEvent.start,
         );
