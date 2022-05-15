@@ -8,6 +8,7 @@
     <v-card
       color="grey lighten-4"
       min-width="350px"
+      max-width="480px"
       flat
     >
       <v-toolbar
@@ -51,6 +52,11 @@
               description
             </v-icon>
             <span>{{ selectedEvent.description }}</span>
+            <v-checkbox
+              :input-value="selectedEvent.is_send"
+              label="開始5分前にメールを送信する"
+              disabled
+            />
           </v-col>
         </v-row>
       </v-card-text>

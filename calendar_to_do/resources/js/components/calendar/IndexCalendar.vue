@@ -293,6 +293,7 @@ export default {
         description: null,
         is_send: false,
       };
+      this.isDialog = false;
     },
 
     // マウスボタンが離されたとき
