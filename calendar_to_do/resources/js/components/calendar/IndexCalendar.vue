@@ -46,6 +46,7 @@
           @optional-date-start="createEvent.start = $event"
           @optional-date-end="createEvent.end = $event"
           @changeDescription="createEvent.description = $event"
+          @changeisSend="createEvent.is_send = $event"
           @validationEventform="validationEventform()"
         />
 
@@ -111,6 +112,7 @@ export default {
       start: null,
       end: null,
       description: null,
+      is_send: false,
     },
 
     createStart: null,
@@ -199,6 +201,7 @@ export default {
           start: this.createStart,
           end: this.createStart,
           description: null,
+          is_send: false,
           timed: true,
           id: 0,
         };
@@ -288,6 +291,7 @@ export default {
         start: null,
         end: null,
         description: null,
+        is_send: false,
       };
     },
 

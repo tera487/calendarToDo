@@ -33,6 +33,12 @@
                 rows="3"
                 @input="$emit('changeDescription',$event)"
               />
+
+              <v-checkbox
+                :input-value="createEvent.is_send"
+                label="開始5分前にメールを送信する"
+                @change="$emit('changeisSend',!createEvent.is_send)"
+              />
             </v-row>
           </v-container>
         </v-card-text>
