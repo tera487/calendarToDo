@@ -43,7 +43,7 @@ class CalendarEventStartTime extends Command
     {
         $eventDate = (Carbon::now())->addMinute(5);
         $eventDate->second = 0;
-        $noticeEvents = Calendar::where('start', $eventDate)->get();
+        $noticeEvents = Calendar::where('start', $eventDate)->where('is_send', true)->get();
 
         logger($noticeEvents);
         foreach ($noticeEvents as $noticeEvent) {
