@@ -9,5 +9,5 @@ class Calendar extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'start', 'end', 'description', 'is_send'];
+    protected $fillable = ['user_id', 'name', 'start', 'end', 'description', 'is_send', 'is_all_day'];
 }

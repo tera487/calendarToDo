@@ -18,12 +18,31 @@
             />
             <v-row>
               <form-calendar-date
+                v-if="!createEvent.is_all_day"
                 :selected-date="createEvent.start"
                 @optional-date="$emit('optional-date-start',$event)"
               />
               <form-calendar-date
+                v-if="!createEvent.is_all_day"
                 :selected-date="createEvent.end"
                 @optional-date="$emit('optional-date-end',$event)"
+              />
+
+              <form-calendar-all-date
+                v-if="createEvent.is_all_day"
+                :selected-date="createEvent.start"
+                @optional-date="$emit('optional-date-start',$event)"
+              />
+              <form-calendar-all-date
+                v-if="createEvent.is_all_day"
+                :selected-date="createEvent.end"
+                @optional-date="$emit('optional-date-end',$event)"
+              />
+              <v-checkbox
+                :input-value="createEvent.is_all_day"
+                label="終日"
+                style="margin-top: 0;"
+                @change="$emit('changeisAllDay',!createEvent.is_all_day)"
               />
 
               <v-textarea
@@ -62,12 +81,14 @@
 
 <script>
 import FormCalendarDate from './form/FormCalendarDate.vue';
+import FormCalendarAllDate from './form/FormCalendarAllDate.vue';
 import FormCalendarName from './form/FormCalendarName.vue';
 
 export default {
   components: {
     FormCalendarDate,
     FormCalendarName,
+    FormCalendarAllDate,
   },
   props: {
     isDialog: {
