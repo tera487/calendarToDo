@@ -47,6 +47,7 @@
           @optional-date-end="createEvent.end = $event"
           @changeDescription="createEvent.description = $event"
           @changeisSend="createEvent.is_send = $event"
+          @changeisAllDay="createEvent.is_all_day = $event"
           @validationEventform="validationEventform()"
         />
 
@@ -113,6 +114,7 @@ export default {
       end: null,
       description: null,
       is_send: false,
+      is_all_day: false,
     },
 
     createStart: null,
@@ -136,8 +138,8 @@ export default {
 
     axios.get('/api/calendar').then((response) => {
       for (let i = 0; i < response.data.length; i++) {
-        response.data[i].start = new Date(response.data[i].start);
-        response.data[i].end = new Date(response.data[i].end);
+        response.data[i].start = this.adjustDate(response.data[i].state, response.data[i].is_all_day);
+        response.data[i].end = this.adjustDate(response.data[i].end, response.data[i].is_all_day);
         response.data[i].timed = true;
         response.data[i].color = this.rndElement(this.colors);
         response.data[i].id = response.data[i].id;
@@ -146,6 +148,13 @@ export default {
     });
   },
   methods: {
+    adjustDate(date, isAllDay) {
+      return isAllDay ? this.setAllDay(date):new Date(date);
+    },
+    setAllDay(data) {
+      const setDate = data.split(' ');
+      return `${setDate[0]}`;
+    },
     colseDeleteDialog(id) {
       if (id !== undefined) {
         this.events = this.events.filter((v) => v.id !== id);
@@ -202,6 +211,7 @@ export default {
           end: this.createStart,
           description: null,
           is_send: false,
+          is_all_day: false,
           timed: true,
           id: 0,
         };
@@ -249,15 +259,16 @@ export default {
     validationEventform() {
       this.isDialog = false;
       if (this.createEvent.id !== this.selectedEvent.id) {
+        if (this.createEvent.is_all_day) {
+          this.createEvent.start = this.setAllDay(this.createEvent.start);
+          this.createEvent.end = this.setAllDay(this.createEvent.end);
+        }
+
         axios
             .post('/api/calendar', this.createEvent)
             .then((res) => {
-              this.createEvent.start = new Date(
-                  this.createEvent.start,
-              );
-              this.createEvent.end = new Date(
-                  this.createEvent.end,
-              );
+              this.createEvent.start = this.adjustDate(this.createEvent.start, this.createEvent.is_all_day);
+              this.createEvent.end = this.adjustDate(this.createEvent.end, this.createEvent.is_all_day);
               this.createEvent.id = res.data;
 
               this.events.push(this.createEvent);
@@ -267,17 +278,10 @@ export default {
             .finally(() => (this.loading = false));
       } else {
         axios
-            .patch(
-                `/api/calendar/${this.createEvent.id}`,
-                this.createEvent,
-            )
+            .patch(`/api/calendar/${this.createEvent.id}`, this.createEvent)
             .then((res) => {
-              this.createEvent.start = new Date(
-                  this.createEvent.start,
-              );
-              this.createEvent.end = new Date(
-                  this.createEvent.end,
-              );
+              this.createEvent.start = this.adjustDate(this.createEvent.start, this.createEvent.is_all_day);
+              this.createEvent.end = this.adjustDate(this.createEvent.end, this.createEvent.is_all_day);
               this.resetCreateEvent();
             })
             .catch((err) => console.log(err))
@@ -292,7 +296,9 @@ export default {
         end: null,
         description: null,
         is_send: false,
+        is_all_day: false,
       };
+      this.isDialog = false;
     },
 
     // マウスボタンが離されたとき

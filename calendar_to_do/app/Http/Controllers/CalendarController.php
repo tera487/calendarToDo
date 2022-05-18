@@ -12,7 +12,7 @@ class CalendarController extends Controller
 {
     private function setCalendarArray(array $append = [])
     {
-        $initCalendar = ['name', 'start', 'end', 'description', 'is_send'];
+        $initCalendar = ['name', 'start', 'end', 'description', 'is_send', 'is_all_day'];
         if (!empty($append)) {
             $initCalendar = array_merge($initCalendar, $append);
         }
