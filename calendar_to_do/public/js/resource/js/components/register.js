@@ -67,9 +67,60 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: 'register',
+  name: 'Register',
   data: function data() {
     return {
       user: {
@@ -205,7 +256,9 @@ var render = function () {
       _c("div", { staticClass: "col-12 col-md-6 offset-md-3" }, [
         _c("div", { staticClass: "card shadow sm" }, [
           _c("div", { staticClass: "card-body" }, [
-            _c("h1", { staticClass: "text-center" }, [_vm._v("新規登録")]),
+            _c("h1", { staticClass: "text-center" }, [
+              _vm._v("\n            新規登録\n          "),
+            ]),
             _vm._v(" "),
             _c("hr"),
             _vm._v(" "),
@@ -235,9 +288,9 @@ var render = function () {
                     ],
                     staticClass: "form-control",
                     attrs: {
+                      id: "name",
                       type: "text",
                       name: "name",
-                      id: "name",
                       placeholder: "Enter name",
                     },
                     domProps: { value: _vm.user.name },
@@ -273,9 +326,9 @@ var render = function () {
                     ],
                     staticClass: "form-control",
                     attrs: {
+                      id: "email",
                       type: "text",
                       name: "email",
-                      id: "email",
                       placeholder: "Enter Email",
                     },
                     domProps: { value: _vm.user.email },
@@ -311,9 +364,9 @@ var render = function () {
                     ],
                     staticClass: "form-control",
                     attrs: {
+                      id: "password",
                       type: "password",
                       name: "password",
-                      id: "password",
                       placeholder: "Enter Password",
                     },
                     domProps: { value: _vm.user.password },
@@ -349,9 +402,9 @@ var render = function () {
                     ],
                     staticClass: "form-control",
                     attrs: {
+                      id: "password_confirmation",
                       type: "password_confirmation",
                       name: "password_confirmation",
-                      id: "password_confirmation",
                       placeholder: "Enter Password",
                     },
                     domProps: { value: _vm.user.password_confirmation },
@@ -379,9 +432,9 @@ var render = function () {
                     },
                     [
                       _vm._v(
-                        "\n                                " +
+                        "\n                " +
                           _vm._s(_vm.processing ? "Please wait" : "Register") +
-                          "\n                            "
+                          "\n              "
                       ),
                     ]
                   ),
