@@ -59,9 +59,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "login",
+  name: "Login",
   data: function data() {
     return {
       auth: {
@@ -201,7 +233,9 @@ var render = function () {
       _c("div", { staticClass: "col-12 col-md-6 offset-md-3" }, [
         _c("div", { staticClass: "card shadow sm" }, [
           _c("div", { staticClass: "card-body" }, [
-            _c("h1", { staticClass: "text-center" }, [_vm._v("Login")]),
+            _c("h1", { staticClass: "text-center" }, [
+              _vm._v("\n            Login\n          "),
+            ]),
             _vm._v(" "),
             _c("hr"),
             _vm._v(" "),
@@ -232,7 +266,7 @@ var render = function () {
                       },
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "text", name: "email", id: "email" },
+                    attrs: { id: "email", type: "text", name: "email" },
                     domProps: { value: _vm.auth.email },
                     on: {
                       input: function ($event) {
@@ -266,9 +300,9 @@ var render = function () {
                     ],
                     staticClass: "form-control",
                     attrs: {
+                      id: "password",
                       type: "password",
                       name: "password",
-                      id: "password",
                     },
                     domProps: { value: _vm.auth.password },
                     on: {
@@ -292,11 +326,26 @@ var render = function () {
                     },
                     [
                       _vm._v(
-                        "\n                                " +
+                        "\n                " +
                           _vm._s(_vm.processing ? "Please wait" : "Login") +
-                          "\n                            "
+                          "\n              "
                       ),
                     ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 text-center" }, [
+                  _c(
+                    "label",
+                    [
+                      _vm._v("Did you forget your password?"),
+                      _c(
+                        "router-link",
+                        { attrs: { to: { name: "passwordReset" } } },
+                        [_vm._v("Password reset!")]
+                      ),
+                    ],
+                    1
                   ),
                 ]),
                 _vm._v(" "),
