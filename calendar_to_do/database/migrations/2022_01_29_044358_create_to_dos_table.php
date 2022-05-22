@@ -15,10 +15,10 @@ class CreateToDosTable extends Migration
     {
         Schema::create('to_dos', function (Blueprint $table) {
             $table->id();
-            $table->string('title',255)->index();
-            $table->string('content',255);
-            $table->date('start_date',255)->nullable()->index();
-            $table->date('end_date',255)->nullable()->index();
+            $table->string('title', 255);
+            $table->string('content', 255);
+            $table->date('start_date', 255)->nullable();
+            $table->date('end_date', 255)->nullable();
             $table->timestamps();
         });
     }
