@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Providers;
+
 use App\Models\GeneralSetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Calendar::class, function ($app) {
             return new Calendar();
         });
-        
     }
 
     /**
@@ -28,5 +28,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        if (\App::environment(['production'])) {
+            \URL::forceScheme('https');
+        }
     }
 }
