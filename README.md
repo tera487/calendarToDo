@@ -26,4 +26,4 @@
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eslint/eslint-original-wordmark.svg" width ="45" height ="45"/>
   </p>
 
-##機能一覧
+## 機能一覧
