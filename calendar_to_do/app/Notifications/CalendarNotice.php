@@ -37,7 +37,7 @@ class CalendarNotice extends Notification
      */
     public function via($notifiable)
     {
-        if(!\App::environment('local')){
+        if (!\App::environment('local')) {
             return ['slack'];
         }
         return ['slack', 'mail'];
