@@ -138,7 +138,7 @@ export default {
 
     axios.get('/api/calendar').then((response) => {
       for (let i = 0; i < response.data.length; i++) {
-        response.data[i].start = this.adjustDate(response.data[i].state, response.data[i].is_all_day);
+        response.data[i].start = this.adjustDate(response.data[i].start, response.data[i].is_all_day);
         response.data[i].end = this.adjustDate(response.data[i].end, response.data[i].is_all_day);
         response.data[i].timed = true;
         response.data[i].color = this.rndElement(this.colors);

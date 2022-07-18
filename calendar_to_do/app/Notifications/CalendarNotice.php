@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\SlackMessage;
 
 class CalendarNotice extends Notification
 {
@@ -36,7 +37,17 @@ class CalendarNotice extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        if (!\App::environment('local')) {
+            return ['slack'];
+        }
+        return ['slack', 'mail'];
+    }
+
+    public function toSlack($notifiable)
+    {
+        return (new SlackMessage)
+            ->from($this->userName)
+            ->content("{$this->name}が{$this->startDate}〜{$this->endDate}に設定されました。");
     }
 
     /**

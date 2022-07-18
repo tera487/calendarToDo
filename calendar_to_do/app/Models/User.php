@@ -46,4 +46,15 @@ class User extends Authenticatable
     {
         return $this->belongsTo(GeneralSetting::class);
     }
+
+    /**
+     * 通知を行うWebhook URLの設定
+     *
+     * @param mix $notification
+     * @return slackWebhookUrl
+     */
+    public function routeNotificationForSlack($notification)
+    {
+        return config('app.slack_url');
+    }
 }
