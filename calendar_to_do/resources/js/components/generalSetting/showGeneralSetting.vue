@@ -64,12 +64,11 @@ export default {
       },
     };
   },
-
   watch: {
     calendar_json: {
       handler: function(newCalendarJson, oldCalendarJson) {
         if (oldCalendarJson.type !== null && oldCalendarJson.mode !== null &&oldCalendarJson.weekday ) {
-          axios.patch('api/generalSetting/1', this.calendar_json);
+          axios.patch('/api/generalSetting/1', this.calendar_json);
         }
       },
       deep: true,
