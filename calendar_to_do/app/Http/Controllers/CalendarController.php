@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Consts\NotificationConst;
 use App\Models\Calendar;
 use App\Event\NotifyUserSchedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,7 @@ class CalendarController extends Controller
 
     public function index()
     {
-        $calendar_items = Calendar::where('user_id', Auth::id())->get($this->setCalendarArray(['id']))->toArray();
+        $calendar_items = Calendar::where([['user_id', Auth::id()], ['start',  'LIKE', '%' . (Carbon::today())->format('Y-m') . '%']])->get($this->setCalendarArray(['id']))->toArray();
         return array_reverse($calendar_items);
     }
 

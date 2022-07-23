@@ -129,6 +129,19 @@ export default {
 
     deleteDialog: false,
   }),
+  watch: {
+    value: {
+      handler: function(newValue, oldValue) {
+        axios.get('/api/calendars/other', {
+          params: {
+            selected_month: this.value,
+          },
+        }).then((response) => {
+          this.adjustDateFormat(response);
+        });
+      },
+    },
+  },
   mounted() {
     axios
         .get(`/api/generalSetting/${this.$store.state.auth.user.id}`)
@@ -137,6 +150,11 @@ export default {
         });
 
     axios.get('/api/calendar').then((response) => {
+      this.adjustDateFormat(response);
+    });
+  },
+  methods: {
+    adjustDateFormat(response) {
       for (let i = 0; i < response.data.length; i++) {
         response.data[i].start = this.adjustDate(response.data[i].start, response.data[i].is_all_day);
         response.data[i].end = this.adjustDate(response.data[i].end, response.data[i].is_all_day);
@@ -145,9 +163,8 @@ export default {
         response.data[i].id = response.data[i].id;
       }
       this.events = response.data;
-    });
-  },
-  methods: {
+    },
+
     adjustDate(date, isAllDay) {
       return isAllDay ? this.setAllDay(date):new Date(date);
     },
