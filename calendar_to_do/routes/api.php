@@ -7,6 +7,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\Single\OtherMonthCalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('todo', ToDoController::class)->except('create', 'edit');
     Route::resource('generalSetting', GeneralSettingController::class)->only('show', 'update');
     Route::resource('calendar', CalendarController::class)->except('create', 'edit');
-    Route::get('calendars/search', [CalendarController::class, "search"]);
+    Route::prefix('calendars')->group(function () {
+        Route::get('other', OtherMonthCalendarController::class);
+        Route::get('search', [CalendarController::class, "search"]);
+    });
     Route::apiResource('users', UserController::class)->only('update');
 });
 // パスワードリセット関連
